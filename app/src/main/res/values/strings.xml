@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">BestBooks</string>
+
+    <string name="inicio_sesion">Iniciar Sesión</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="no_email">El email no está registrado en la aplicación</string>
+    <string name="no_password">La contraseña es incorrecta</string>
+
+</resources>
