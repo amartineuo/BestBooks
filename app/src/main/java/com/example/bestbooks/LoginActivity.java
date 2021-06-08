@@ -2,6 +2,7 @@ package com.example.bestbooks;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -75,6 +76,16 @@ public class LoginActivity extends AppCompatActivity {
                         if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
                             Log.d("Login correcto - ", user.getName());
                             text_error_password.setVisibility(View.INVISIBLE);
+
+                            //Iniciar la pagina principal una vez loggeado
+                            Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
+
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("myUser", user);
+                            intent.putExtras(bundle);
+
+                            startActivity(intent);
+                            finish();
                         }
                         else {
                             Log.d("Login incorrecto -", "Password no coincide");

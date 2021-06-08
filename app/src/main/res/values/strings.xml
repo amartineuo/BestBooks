@@ -7,4 +7,7 @@
     <string name="no_email">El email no está registrado en la aplicación</string>
     <string name="no_password">La contraseña es incorrecta</string>
 
+    <string name="des_img">Book image</string>
+    <string name="des_title">Book title</string>
+
 </resources>
