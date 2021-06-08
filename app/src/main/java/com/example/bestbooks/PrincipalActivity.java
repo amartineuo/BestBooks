@@ -1,11 +1,16 @@
 package com.example.bestbooks;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.bestbooks.interfaceAPI.MyJsonServerAPI;
 import com.example.bestbooks.models.Book;
@@ -80,5 +85,36 @@ public class PrincipalActivity extends AppCompatActivity {
                 Log.d("Inicio - NO SUCESSFUL", "onFailure");
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_action_bar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case R.id.action_bar_profile:
+                Intent intent = new Intent(this, ProfileActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("myUser", myUser);
+
+                intent.putExtras(bundle);
+                startActivity(intent);
+
+                return true;
+
+            case R.id.action_bar_search:
+                Toast.makeText(this, "search", Toast.LENGTH_LONG).show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

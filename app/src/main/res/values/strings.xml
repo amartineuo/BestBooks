@@ -10,4 +10,17 @@
     <string name="des_img">Book image</string>
     <string name="des_title">Book title</string>
 
+
+    <string name="title_name">Nombre usuario</string>
+    <string name="title_age">Edad</string>
+    <string name="title_username">Username</string>
+    <string name="title_email">Email</string>
+
+    <string name="default_age">Edad usuario</string>
+    <string name="default_username">Username usuario</string>
+    <string name="default_email">Email usuario</string>
+
+    <string name="profile_modify">Modificar Perfil</string>
+    <string name="logout">Cerrar sesión</string>
+
 </resources>
