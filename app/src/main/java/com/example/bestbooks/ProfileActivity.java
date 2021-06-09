@@ -2,8 +2,11 @@ package com.example.bestbooks;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.bestbooks.models.User;
@@ -18,6 +21,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+
+        //Imagen usuario
+        ImageView imageView = (ImageView)findViewById(R.id.image_profile_modify);
+        imageView.setImageResource(R.drawable.ic_person);
 
         //Informacion recibida del usuario registrado
         Bundle bundleRecibido = getIntent().getExtras();
@@ -51,5 +58,24 @@ public class ProfileActivity extends AppCompatActivity {
                 });
             }
         });
+
+
+
+        ImageView modify_profile = findViewById(R.id.modify_profile);
+        modify_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(ProfileActivity.this, ModifyProfileActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("myUserID", myUserID);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+
+            }
+        });
+
     }
 }

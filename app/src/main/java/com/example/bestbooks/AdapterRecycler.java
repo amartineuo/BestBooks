@@ -65,11 +65,7 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
 
 
         public void asignarBooks(Book book) throws IOException {
-
             //Establecer imagen
-            //URL newurl = new URL(book.getImg());
-            //Bitmap img = BitmapFactory.decodeStream(newurl.openConnection().getInputStream());
-            //image_adapter_grid.setImageBitmap(img);
             new ImageLoadTask(book.getImg().toString(), image_adapter_grid).execute();
 
             //Establecer titulo del libro

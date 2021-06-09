@@ -15,6 +15,9 @@
     <string name="title_age">Edad</string>
     <string name="title_username">Username</string>
     <string name="title_email">Email</string>
+    <string name="title_password">Contraseña</string>
+    <string name="title_password_old">Contraseña anterior </string>
+    <string name="title_password_new">Contraseña nueva</string>
 
     <string name="default_age">Edad usuario</string>
     <string name="default_username">Username usuario</string>
@@ -23,7 +26,7 @@
     <string name="profile_modify">Modificar Perfil</string>
     <string name="logout">Cerrar sesión</string>
 
-    <string name="add_book">¡Crea una nueva referencia!</string>
+    <string name="add_book">¡Crea una nueva reseña!</string>
     <string name="add_book_name">Nombre del libro</string>
     <string name="add_book_author">Autor</string>
     <string name="add_book_year">Año de publicación</string>
@@ -35,4 +38,7 @@
     <string name="add_book_recommend_no">No lo recomiendo</string>
     <string name="add_book_create">Crear</string>
 
+
+    <string name="modify">Modificar</string>
+    <string name="cancel">Cancelar</string>
 </resources>
