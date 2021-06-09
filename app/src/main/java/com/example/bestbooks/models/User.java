@@ -1,20 +1,39 @@
 package com.example.bestbooks.models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 
+@Entity(tableName = "users")
 public class User implements Serializable {
 
+    @PrimaryKey (autoGenerate = true)
     private int id;
 
+    @ColumnInfo(name = "username")
     private String username;
 
+    @ColumnInfo(name = "name")
     private String name;
 
+    @ColumnInfo(name = "edad")
     private int edad;
 
+    @ColumnInfo(name = "email")
     private String email;
 
+    @ColumnInfo(name = "password")
     private String password;
+
+    public User(String username, String name, int edad, String email, String password) {
+        this.username = username;
+        this.name = name;
+        this.edad = edad;
+        this.email = email;
+        this.password = password;
+    }
 
     public int getId() {
         return id;

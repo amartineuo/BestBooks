@@ -17,4 +17,7 @@ public interface MyJsonServerAPI {
     @GET("books")
     Call<List<Book>> getAllBooks();
 
+    @GET("users")
+    Call<List<User>> getAllUsers();
+
 }

@@ -23,4 +23,16 @@
     <string name="profile_modify">Modificar Perfil</string>
     <string name="logout">Cerrar sesión</string>
 
+    <string name="add_book">¡Crea una nueva referencia!</string>
+    <string name="add_book_name">Nombre del libro</string>
+    <string name="add_book_author">Autor</string>
+    <string name="add_book_year">Año de publicación</string>
+    <string name="add_book_rating">Valoración (del 1 al 10)</string>
+    <string name="add_book_commentary">Comentario</string>
+    <string name="add_book_img">Imagen (URL)</string>
+    <string name="add_book_recommend">¿Lo recomiendas?</string>
+    <string name="add_book_recommend_yes">Si, lo recomiendo</string>
+    <string name="add_book_recommend_no">No lo recomiendo</string>
+    <string name="add_book_create">Crear</string>
+
 </resources>

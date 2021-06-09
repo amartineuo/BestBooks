@@ -4,17 +4,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.bestbooks.interfaceAPI.MyJsonServerAPI;
 import com.example.bestbooks.models.Book;
 import com.example.bestbooks.models.User;
+import com.example.bestbooks.roomdb.ProjectDatabase;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PrincipalActivity extends AppCompatActivity {
 
-    private User myUser;
+    private int myUserID;
     List<Book> bookList = new ArrayList<>();
     RecyclerView recyclerView;
 
@@ -36,53 +40,49 @@ public class PrincipalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
 
+        //Instancia de la base de datos
+        ProjectDatabase.getInstance(this);
 
         //Inicializacion del recyclerView
         recyclerView = findViewById(R.id.recycler_books);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-
         //Informacion recibida del usuario registrado
         Bundle bundleRecibido = getIntent().getExtras();
         if(bundleRecibido != null){
-            myUser = (User) bundleRecibido.getSerializable("myUser");
+            myUserID = bundleRecibido.getInt("myUserID");
         }
 
 
-        //Crear instancia de Retrofit y add el convertidor GSON
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://my-json-server.typicode.com/amartineuo/jsonBB/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        MyJsonServerAPI myJsonServerAPI = retrofit.create(MyJsonServerAPI.class);
-
-        //Llamada a la API para obtener todos los libros
-        Call<List<Book>> call = myJsonServerAPI.getAllBooks();
-
-        call.enqueue(new Callback<List<Book>>() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
-            public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
+            public void run() {
 
-                //Se obtiene la respuesta
-                List<Book> books = response.body();
+                ProjectDatabase db = ProjectDatabase.getInstance(PrincipalActivity.this);
 
-                if(books.size() == 0){
-                    Log.d("Lista vacia", "No hay libros");
+                List<Book> books = db.getBookDAO().getAllBooks();
+
+                for (Book book : books) {
+                    bookList.add(book);
                 }
-                else {
-                    for (Book book : books) {
-                        bookList.add(book);
-                        AdapterRecycler adapterRecycler = new AdapterRecycler(bookList);
-                        recyclerView.setAdapter(adapterRecycler);
-                        //Log.d("LIBRO correcto - ", book.getBookName());
-                    }
-                }
+
+                AdapterRecycler adapterRecycler = new AdapterRecycler(bookList);
+                runOnUiThread(() ->recyclerView.setAdapter(adapterRecycler));
             }
+        });
 
+        //Button para add un book
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(Call<List<Book>> call, Throwable t) {
-                Log.d("Inicio - NO SUCESSFUL", "onFailure");
+            public void onClick(View view) {
+                Intent intent = new Intent(PrincipalActivity.this, AddBookActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("myUserID", myUserID);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
             }
         });
     }
@@ -102,9 +102,9 @@ public class PrincipalActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, ProfileActivity.class);
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("myUser", myUser);
-
+                bundle.putInt("myUserID", myUserID);
                 intent.putExtras(bundle);
+
                 startActivity(intent);
 
                 return true;

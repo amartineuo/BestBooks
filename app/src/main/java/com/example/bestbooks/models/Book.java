@@ -1,25 +1,49 @@
 package com.example.bestbooks.models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "books")
 public class Book {
 
+    @PrimaryKey (autoGenerate = true)
     private int postID;
 
+    @ColumnInfo(name = "userID")
     private int userID;
 
+    @ColumnInfo(name = "rating")
     private float rating;
 
+    @ColumnInfo(name = "bookName")
     private String bookName;
 
+    @ColumnInfo(name = "author")
     private String author;
 
+    @ColumnInfo(name = "year")
     private String year;
 
+    @ColumnInfo(name = "commentary")
     private String commentary;
 
+    @ColumnInfo(name = "img")
     private String img;
 
+    @ColumnInfo(name = "recommend")
     private int recommend;
 
+    public Book(int userID, float rating, String bookName, String author, String year, String commentary, String img, int recommend) {
+        this.userID = userID;
+        this.rating = rating;
+        this.bookName = bookName;
+        this.author = author;
+        this.year = year;
+        this.commentary = commentary;
+        this.img = img;
+        this.recommend = recommend;
+    }
 
     public int getPostID() {
         return postID;
