@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -67,6 +68,22 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(ProfileActivity.this, ModifyProfileActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("myUserID", myUserID);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+
+            }
+        });
+
+        Button button_my_books = findViewById(R.id.button_my_books);
+        button_my_books.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(ProfileActivity.this, UserBooksActivity.class);
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("myUserID", myUserID);

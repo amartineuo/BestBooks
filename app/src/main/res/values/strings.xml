@@ -58,4 +58,10 @@
     <string name="recommend">Recomendado:</string>
     <string name="commentary">Comentario del usuario:</string>
 
+    <string name="modify_book">¡Modifica tu reseña!</string>
+
+
+    <string name="my_books">Mis reseñas</string>
+    <string name="my_favs">Mis favoritos</string>
+
 </resources>

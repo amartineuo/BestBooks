@@ -4,9 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.bestbooks.models.Book;
 import com.example.bestbooks.models.User;
@@ -16,6 +19,9 @@ import java.util.List;
 
 public class DetailBookActivity extends AppCompatActivity {
 
+    private int myUserID;
+    private Book book;
+
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +29,17 @@ public class DetailBookActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_book);
 
         //Recibido del intent
-        Book book;
         book = (Book) getIntent().getExtras().getSerializable("bookDetail");
-        int myUserID = getIntent().getExtras().getInt("myUserID");
+        myUserID = getIntent().getExtras().getInt("myUserID");
 
 
         //INFORMACION DEL USUARIO QUE LO PUBLICO
+
+        ImageView imageView_favorite_no = findViewById(R.id.imageView_favorite_no);
+        ImageView imageView_favorite_yes = findViewById(R.id.imageView_favorite_yes);
+
+        ImageView imageView_edit_book = findViewById(R.id.imageView_edit_book);
+        ImageView imageView_delete_book = findViewById(R.id.imageView_delete_book);
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -36,10 +47,63 @@ public class DetailBookActivity extends AppCompatActivity {
 
                 ProjectDatabase db = ProjectDatabase.getInstance(DetailBookActivity.this);
 
-                User userCreatedBook = db.getUserDAO().getUserByID(myUserID);
+                User userCreatedBook = db.getUserDAO().getUserByID(book.getUserID());
 
                 TextView textView_name = findViewById(R.id.textView_name);
                 runOnUiThread(() ->textView_name.setText(userCreatedBook.getUsername()));
+
+                if (myUserID == userCreatedBook.getId()){ //Es una publicacion mia (puedo editar)
+
+                    runOnUiThread(() -> {
+                        imageView_edit_book.setVisibility(View.VISIBLE);
+                        imageView_delete_book.setVisibility(View.VISIBLE);
+                        imageView_favorite_no.setVisibility(View.INVISIBLE);
+                        imageView_favorite_yes.setVisibility(View.INVISIBLE);
+                    });
+
+                }
+                else{ //No es una publicacion mia (puedo dar fav)
+
+                    runOnUiThread(() -> {
+                        imageView_favorite_no.setVisibility(View.VISIBLE);
+                        imageView_favorite_yes.setVisibility(View.VISIBLE);
+                        imageView_edit_book.setVisibility(View.INVISIBLE);
+                        imageView_delete_book.setVisibility(View.INVISIBLE);
+                    });
+                }
+            }
+        });
+
+
+        imageView_favorite_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),"EN FAV",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //Editar un book
+        imageView_edit_book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentEdit = new Intent(DetailBookActivity.this, ModifyBookActivity.class);
+
+                Bundle bundleEdit = new Bundle();
+                bundleEdit.putInt("myUserID", myUserID);
+                bundleEdit.putSerializable("bookEdit", book);
+                intentEdit.putExtras(bundleEdit);
+
+                startActivity(intentEdit);
+            }
+        });
+
+        //Eliminar un book
+        imageView_delete_book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteBook();
+                finish();
+                Toast.makeText(getApplicationContext(),"Reseña eliminada correctamente",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -83,5 +147,25 @@ public class DetailBookActivity extends AppCompatActivity {
         TextView textView_comentary = findViewById(R.id.textView_comentary);
         textView_comentary.setText(book.getCommentary());
 
+    }
+
+    public void deleteBook(){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                ProjectDatabase db = ProjectDatabase.getInstance(DetailBookActivity.this);
+
+                db.getBookDAO().deleteBook(book);
+
+                Intent intentEdit = new Intent(DetailBookActivity.this, PrincipalActivity.class);
+
+                Bundle bundleProfile = new Bundle();
+                bundleProfile.putInt("myUserID", myUserID);
+                intentEdit.putExtras(bundleProfile);
+
+                startActivity(intentEdit);
+            }
+        });
     }
 }
