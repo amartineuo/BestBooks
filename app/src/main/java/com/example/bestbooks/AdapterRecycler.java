@@ -1,5 +1,6 @@
 package com.example.bestbooks;
 
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bestbooks.models.Book;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHolderRecycler> {
 
     List<Book> bookList;
+    List<Book> originalBookList;
 
     public AdapterRecycler(List<Book> bookList) {
+
         this.bookList = bookList;
+        this.originalBookList = bookList;
     }
 
     @NonNull
@@ -72,5 +78,28 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
             text_adpter_grid.setText(book.getBookName());
 
         }
+    }
+
+    public void filter(String search){
+        if (search.length() == 0){
+            //bookList.clear();
+            originalBookList.addAll(bookList);
+        }
+        else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                List<Book> list_search = bookList.stream().filter(book -> book.getBookName().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList());
+                bookList.clear();
+                bookList.addAll(list_search);
+            }
+            else{
+                bookList.clear();
+                for (Book book : originalBookList){
+                    if(book.getBookName().toLowerCase().contains(search.toLowerCase())){
+                        bookList.add(book);
+                    }
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

@@ -99,18 +99,24 @@ public class PrincipalActivity extends AppCompatActivity {
         switch (item.getItemId()){
 
             case R.id.action_bar_profile:
-                Intent intent = new Intent(this, ProfileActivity.class);
+                Intent intentProfile = new Intent(this, ProfileActivity.class);
 
-                Bundle bundle = new Bundle();
-                bundle.putInt("myUserID", myUserID);
-                intent.putExtras(bundle);
+                Bundle bundleProfile = new Bundle();
+                bundleProfile.putInt("myUserID", myUserID);
+                intentProfile.putExtras(bundleProfile);
 
-                startActivity(intent);
+                startActivity(intentProfile);
 
                 return true;
 
             case R.id.action_bar_search:
-                Toast.makeText(this, "search", Toast.LENGTH_LONG).show();
+                Intent intentSearch = new Intent(this, SearchActivity.class);
+
+                Bundle bundleSearch = new Bundle();
+                bundleSearch.putInt("myUserID", myUserID);
+                intentSearch.putExtras(bundleSearch);
+
+                startActivity(intentSearch);
                 return true;
 
             default:
