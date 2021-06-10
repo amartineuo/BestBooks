@@ -41,4 +41,10 @@
 
     <string name="modify">Modificar</string>
     <string name="cancel">Cancelar</string>
+
+    <string name="new_profile">¡Crea un nuevo perfil!</string>
+    <string name="name_complete">Nombre y apellidos</string>
+    <string name="error_register">El email ya está registrado</string>
+    <string name="register">Registrarse</string>
+
 </resources>

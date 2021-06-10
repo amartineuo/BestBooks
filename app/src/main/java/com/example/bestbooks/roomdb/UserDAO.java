@@ -24,7 +24,7 @@ public interface UserDAO {
     public List<User> getUserByEmail(String email);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void  insertUser(User user);
+    long insertUser(User user);
 
     @Update
     public int updateUser(User user);
