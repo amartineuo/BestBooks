@@ -53,4 +53,9 @@
     <string name="seach_rating_menor">Buscar peores valoraciones</string>
     <string name="seach_rating_mayor">Buscar mejores valoraciones</string>
 
+    <string name="user">Usuario:</string>
+    <string name="rating">Valoración:</string>
+    <string name="recommend">Recomendado:</string>
+    <string name="commentary">Comentario del usuario:</string>
+
 </resources>

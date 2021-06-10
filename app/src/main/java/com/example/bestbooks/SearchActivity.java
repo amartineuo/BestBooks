@@ -21,6 +21,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     private androidx.appcompat.widget.SearchView searchView;
     RecyclerView recyclerView;
+    private int myUserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,13 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         recyclerView = findViewById(R.id.recycler_search);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
+
+        //Informacion recibida del usuario registrado
+        Bundle bundleRecibido = getIntent().getExtras();
+        if(bundleRecibido != null){
+            myUserID = bundleRecibido.getInt("myUserID");
+        }
+
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -41,7 +49,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
                 List<Book> bookList = db.getBookDAO().getAllBooks();
 
-                AdapterRecycler adapterRecycler = new AdapterRecycler(bookList);
+                AdapterRecycler adapterRecycler = new AdapterRecycler(bookList, myUserID);
                 runOnUiThread(() ->recyclerView.setAdapter(adapterRecycler));
             }
         });
@@ -86,7 +94,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                     }
                 });
 
-                AdapterRecycler adapterRecycler = new AdapterRecycler(bookList);
+                AdapterRecycler adapterRecycler = new AdapterRecycler(bookList, myUserID);
                 runOnUiThread(() ->recyclerView.setAdapter(adapterRecycler));
             }
         });
@@ -111,7 +119,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
                 List<Book> bookList = db.getBookDAO().getAllBooks();
 
-                AdapterRecycler adapterRecycler = new AdapterRecycler(bookList);
+                AdapterRecycler adapterRecycler = new AdapterRecycler(bookList, myUserID);
                 runOnUiThread(() ->recyclerView.setAdapter(adapterRecycler));
                 adapterRecycler.filter(newText);
             }

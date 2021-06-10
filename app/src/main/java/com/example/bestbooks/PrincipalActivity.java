@@ -66,7 +66,7 @@ public class PrincipalActivity extends AppCompatActivity {
                     bookList.add(book);
                 }
 
-                AdapterRecycler adapterRecycler = new AdapterRecycler(bookList);
+                AdapterRecycler adapterRecycler = new AdapterRecycler(bookList, myUserID);
                 runOnUiThread(() ->recyclerView.setAdapter(adapterRecycler));
             }
         });

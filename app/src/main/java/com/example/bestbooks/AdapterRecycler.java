@@ -1,6 +1,8 @@
 package com.example.bestbooks;
 
+import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHolderRecycler> {
+public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHolderRecycler> {
 
     List<Book> bookList;
     List<Book> originalBookList;
+    private int myUserID;
 
-    public AdapterRecycler(List<Book> bookList) {
-
+    public AdapterRecycler(List<Book> bookList, int myUserID) {
         this.bookList = bookList;
         this.originalBookList = bookList;
+        this.myUserID = myUserID;
     }
 
     @NonNull
@@ -46,6 +49,17 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //Cuando se selecciona un item
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(holder.itemView.getContext(), DetailBookActivity.class);
+                intent.putExtra("bookDetail", bookList.get(position));
+                intent.putExtra("myUserID", myUserID);
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
