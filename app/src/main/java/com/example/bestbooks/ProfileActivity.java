@@ -94,5 +94,21 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        Button button_my_favs = findViewById(R.id.button_my_favs);
+        button_my_favs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(ProfileActivity.this, UserFavsActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("myUserID", myUserID);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+
+            }
+        });
+
     }
 }

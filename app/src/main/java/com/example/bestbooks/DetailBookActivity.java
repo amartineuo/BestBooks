@@ -6,21 +6,27 @@ import androidx.core.content.ContextCompat;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bestbooks.models.Book;
+import com.example.bestbooks.models.Favorite;
 import com.example.bestbooks.models.User;
 import com.example.bestbooks.roomdb.ProjectDatabase;
-
-import java.util.List;
 
 public class DetailBookActivity extends AppCompatActivity {
 
     private int myUserID;
     private Book book;
+
+    ImageView imageView_favorite_no;
+    ImageView imageView_favorite_yes;
+
+    ImageView imageView_edit_book;
+    ImageView imageView_delete_book;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -35,11 +41,11 @@ public class DetailBookActivity extends AppCompatActivity {
 
         //INFORMACION DEL USUARIO QUE LO PUBLICO
 
-        ImageView imageView_favorite_no = findViewById(R.id.imageView_favorite_no);
-        ImageView imageView_favorite_yes = findViewById(R.id.imageView_favorite_yes);
+        imageView_favorite_no = findViewById(R.id.imageView_favorite_no);
+        imageView_favorite_yes = findViewById(R.id.imageView_favorite_yes);
 
-        ImageView imageView_edit_book = findViewById(R.id.imageView_edit_book);
-        ImageView imageView_delete_book = findViewById(R.id.imageView_delete_book);
+        imageView_edit_book = findViewById(R.id.imageView_edit_book);
+        imageView_delete_book = findViewById(R.id.imageView_delete_book);
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -63,22 +69,30 @@ public class DetailBookActivity extends AppCompatActivity {
 
                 }
                 else{ //No es una publicacion mia (puedo dar fav)
-
                     runOnUiThread(() -> {
-                        imageView_favorite_no.setVisibility(View.VISIBLE);
-                        imageView_favorite_yes.setVisibility(View.VISIBLE);
                         imageView_edit_book.setVisibility(View.INVISIBLE);
                         imageView_delete_book.setVisibility(View.INVISIBLE);
                     });
+
                 }
             }
         });
 
+        comprobarFav();
 
+        //No hay favorito (click para dar)
         imageView_favorite_no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"EN FAV",Toast.LENGTH_SHORT).show();
+                ponerQuitarFav(0);
+            }
+        });
+
+        //Si hay favorito (click para quitar)
+        imageView_favorite_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ponerQuitarFav(1);
             }
         });
 
@@ -158,13 +172,66 @@ public class DetailBookActivity extends AppCompatActivity {
 
                 db.getBookDAO().deleteBook(book);
 
-                Intent intentEdit = new Intent(DetailBookActivity.this, PrincipalActivity.class);
+                Intent intentDelete = new Intent(DetailBookActivity.this, PrincipalActivity.class);
 
-                Bundle bundleProfile = new Bundle();
-                bundleProfile.putInt("myUserID", myUserID);
-                intentEdit.putExtras(bundleProfile);
+                Bundle bundleDelete = new Bundle();
+                bundleDelete.putInt("myUserID", myUserID);
+                intentDelete.putExtras(bundleDelete);
 
-                startActivity(intentEdit);
+                startActivity(intentDelete);
+                finish();
+            }
+        });
+    }
+
+    public void comprobarFav(){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                ProjectDatabase db = ProjectDatabase.getInstance(DetailBookActivity.this);
+
+                Favorite fav = db.getFavoriteDAO().getFavByUserAndBook(myUserID, book.getPostID());
+
+                if (fav != null){ //Si hay fav
+                    imageView_favorite_yes.setVisibility(View.VISIBLE);
+                    imageView_favorite_no.setVisibility(View.INVISIBLE);
+                }
+                else{ //No hay fav
+                    imageView_favorite_no.setVisibility(View.VISIBLE);
+                    imageView_favorite_yes.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
+
+    //0 - add; 1 - delete
+    public void ponerQuitarFav(int cod){
+
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                ProjectDatabase db = ProjectDatabase.getInstance(DetailBookActivity.this);
+
+                if(cod == 0){ //add fav
+                    Favorite favAdd = new Favorite(myUserID, book.getPostID());
+                    db.getFavoriteDAO().insertFavorite(favAdd);
+                    Log.d("Detalle", "Insertar Fav");
+                    runOnUiThread(() -> {
+                        imageView_favorite_yes.setVisibility(View.VISIBLE);
+                        imageView_favorite_no.setVisibility(View.INVISIBLE);
+                    });
+                }
+                else{ //delete fav
+                    Favorite favDelete = db.getFavoriteDAO().getFavByUserAndBook(myUserID, book.getPostID());
+                    db.getFavoriteDAO().deleteFavorite(favDelete);
+                    Log.d("Detalle", "Borrar Fav");
+                    runOnUiThread(() -> {
+                        imageView_favorite_no.setVisibility(View.VISIBLE);
+                        imageView_favorite_yes.setVisibility(View.INVISIBLE);
+                    });
+                }
             }
         });
     }

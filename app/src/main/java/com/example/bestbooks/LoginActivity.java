@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.example.bestbooks.interfaceAPI.MyJsonServerAPI;
 import com.example.bestbooks.models.Book;
+import com.example.bestbooks.models.Favorite;
 import com.example.bestbooks.models.User;
 import com.example.bestbooks.roomdb.ProjectDatabase;
 
@@ -105,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
     private void cargarDatosAPIaRoom(){
         cargarBooksAPI();
         cargarUsersAPI();
+        cargarFavoritesAPI();
     }
 
     private void cargarBooksAPI(){
@@ -187,6 +189,49 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
+                Log.d("Login - NO SUCESSFUL", "onFailure");
+            }
+        });
+    }
+
+    private void cargarFavoritesAPI(){
+        //Crear instancia de Retrofit y add el convertidor GSON
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://my-json-server.typicode.com/amartineuo/jsonBB/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MyJsonServerAPI myJsonServerAPI = retrofit.create(MyJsonServerAPI.class);
+
+        //Llamada a la API para obtener todos los libros
+        Call<List<Favorite>> call = myJsonServerAPI.getAllFavorites();
+
+        call.enqueue(new Callback<List<Favorite>>() {
+            @Override
+            public void onResponse(Call<List<Favorite>> call, Response<List<Favorite>> response) {
+                //Se obtiene la respuesta
+                List<Favorite> favorites = response.body();
+
+                if(favorites.size() == 0){
+                    Log.d("Lista vacia", "No hay favoritos");
+                }
+                else {
+
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            ProjectDatabase db = ProjectDatabase.getInstance(LoginActivity.this);
+
+                            for (Favorite favorite : favorites) {
+                                db.getFavoriteDAO().insertFavorite(favorite);
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Favorite>> call, Throwable t) {
                 Log.d("Login - NO SUCESSFUL", "onFailure");
             }
         });

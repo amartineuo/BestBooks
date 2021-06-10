@@ -7,9 +7,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.bestbooks.models.Book;
+import com.example.bestbooks.models.Favorite;
 import com.example.bestbooks.models.User;
 
-@Database(entities = {User.class, Book.class}, version = 1)
+@Database(entities = {User.class, Book.class, Favorite.class}, version = 1)
 public abstract class ProjectDatabase extends RoomDatabase {
 
     public static ProjectDatabase instance;
@@ -25,4 +26,6 @@ public abstract class ProjectDatabase extends RoomDatabase {
     public abstract UserDAO getUserDAO();
 
     public abstract BookDAO getBookDAO();
+
+    public abstract FavoriteDAO getFavoriteDAO();
 }

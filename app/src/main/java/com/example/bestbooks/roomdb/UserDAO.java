@@ -18,14 +18,14 @@ public interface UserDAO {
     List<User> getAllUsers();
 
     @Query("SELECT * FROM users WHERE id = :id")
-    public User getUserByID (int id);
+    User getUserByID(int id);
 
     @Query("SELECT * FROM users WHERE email = :email")
-    public List<User> getUserByEmail(String email);
+    List<User> getUserByEmail(String email);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insertUser(User user);
 
     @Update
-    public int updateUser(User user);
+    int updateUser(User user);
 }

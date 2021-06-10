@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.bestbooks.models.Book;
-import com.example.bestbooks.models.User;
 
 import java.util.List;
 
@@ -18,15 +17,18 @@ public interface BookDAO {
     @Query("SELECT * from books")
     List<Book> getAllBooks();
 
+    @Query("SELECT * FROM books WHERE postID = :postID")
+    Book getBookByID(int postID);
+
     @Query("SELECT * FROM books WHERE userID = :userID")
-    public List<Book> getUserBooks (int userID);
+    List<Book> getUserBooks(int userID);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void  insertBook(Book book);
 
     @Update
-    public int updateBook(Book book);
+    int updateBook(Book book);
 
     @Delete
-    public int deleteBook(Book book);
+    void deleteBook(Book book);
 }
