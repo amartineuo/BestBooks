@@ -25,11 +25,11 @@
                 android:id="@+id/reg_tv_app_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginTop="30dp"
+                android:gravity="center"
                 android:text="@string/app_name"
                 android:textColor="@color/color_principal"
-                android:textSize="36sp"
+                android:textSize="40sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/new_profile"
+                android:textColor="@color/color_secundario"
                 android:textSize="30sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -74,7 +75,7 @@
                     android:id="@+id/reg_tv_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="30dp"
                     android:layout_marginTop="10dp"
                     android:lineSpacingExtra="8sp"
                     android:text="@string/title_username"
@@ -85,11 +86,13 @@
                     android:id="@+id/reg_new_username"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="30dp"
                     android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="@string/title_username"
-                    android:inputType="textPersonName" />
+                    android:inputType="text"
+                    android:textColor="@color/black"
+                    android:autofillHints="" />
             </LinearLayout>
 
             <LinearLayout
@@ -102,19 +105,23 @@
                     android:id="@+id/reg_tv_age"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_age"
+                    android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
+                    android:text="@string/title_age"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/reg_new_age"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
                     android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="@string/title_age"
-                    android:inputType="textPersonName" />
+                    android:inputType="number"
+                    android:textColor="@color/black"
+                    android:autofillHints="" />
             </LinearLayout>
 
         </LinearLayout>
@@ -129,7 +136,7 @@
                 android:id="@+id/reg_tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="8sp"
                 android:text="@string/name_complete"
@@ -138,13 +145,15 @@
 
             <EditText
                 android:id="@+id/reg_new_name"
-                android:layout_width="350dp"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/name_complete"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="@color/black"
+                android:autofillHints="" />
         </LinearLayout>
 
         <LinearLayout
@@ -157,7 +166,7 @@
                 android:id="@+id/reg_tv_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="8sp"
                 android:text="@string/title_email"
@@ -166,13 +175,15 @@
 
             <EditText
                 android:id="@+id/reg_new_email"
-                android:layout_width="350dp"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/email"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:textColor="@color/black"
+                android:autofillHints="" />
         </LinearLayout>
 
         <LinearLayout
@@ -185,7 +196,7 @@
                 android:id="@+id/reg_tv_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="8sp"
                 android:text="@string/title_password"
@@ -194,13 +205,15 @@
 
             <EditText
                 android:id="@+id/reg_new_password"
-                android:layout_width="350dp"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@string/password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:autofillHints="" />
         </LinearLayout>
 
         <LinearLayout
@@ -218,21 +231,27 @@
                     android:layout_height="wrap_content"
                     android:text="@string/error_register"
                     android:textColor="@color/red"
+                    android:textSize="18sp"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toTopOf="@+id/button_register"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.497"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.326" />
 
                 <Button
                     android:id="@+id/button_register"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="175dp"
+                    android:layout_height="63dp"
                     android:text="@string/register"
+                    android:textSize="16sp"
+                    app:cornerRadius="30dip"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.675" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 

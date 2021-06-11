@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bestbooks.models.Book;
@@ -55,8 +56,10 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(holder.itemView.getContext(), DetailBookActivity.class);
-                intent.putExtra("bookDetail", bookList.get(position));
-                intent.putExtra("myUserID", myUserID);
+
+                ClaseGlobal claseGlobal = (ClaseGlobal) v.getContext().getApplicationContext();
+                claseGlobal.setBookAux(bookList.get(position));
+
                 holder.itemView.getContext().startActivity(intent);
             }
         });
@@ -72,15 +75,14 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
 
         ImageView image_adapter_grid;
         TextView text_adpter_grid;
-
+        TextView rating_adapter_grid;
 
         public ViewHolderRecycler(@NonNull View itemView) {
             super(itemView);
 
             image_adapter_grid = itemView.findViewById(R.id.image_adapter_grid);
             text_adpter_grid = itemView.findViewById(R.id.text_adpter_grid);
-
-
+            rating_adapter_grid = itemView.findViewById(R.id.rating_adapter_grid);
         }
 
 
@@ -90,6 +92,15 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
 
             //Establecer titulo del libro
             text_adpter_grid.setText(book.getBookName());
+
+            //Establecer valoracion
+            if(book.getRating() < 5){
+                rating_adapter_grid.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.red));
+            }
+            else{
+                rating_adapter_grid.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.green));
+            }
+            rating_adapter_grid.setText(String.valueOf(book.getRating()));
 
         }
     }

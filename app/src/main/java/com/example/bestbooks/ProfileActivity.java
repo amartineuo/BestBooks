@@ -12,8 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bestbooks.models.Book;
 import com.example.bestbooks.models.User;
 import com.example.bestbooks.roomdb.ProjectDatabase;
+
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -142,6 +145,17 @@ public class ProfileActivity extends AppCompatActivity {
 
                 //Usuario loggeado recuperado de la BD con el identificador
                 User user = db.getUserDAO().getUserByID(myUserID);
+
+                //Se borran los books y favoritos a ese book perteneciente al usuario
+                List<Book> allBooks = db.getBookDAO().getAllBooks();
+                for (Book book : allBooks){
+                    if (book.getUserID() == myUserID){
+                        db.getBookDAO().deleteBook(book);
+                        db.getFavoriteDAO().deleteFavoritesByBook(book.getPostID());
+                    }
+                }
+
+                //Se elimina el usuario
                 db.getUserDAO().deleteUser(user);
             }
         });

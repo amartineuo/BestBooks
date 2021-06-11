@@ -4,12 +4,13 @@
     <string name="inicio_sesion">Iniciar Sesión</string>
     <string name="email">Email</string>
     <string name="password">Contraseña</string>
-    <string name="no_email">El email no está registrado en la aplicación</string>
+    <string name="no_email">El email no está registrado</string>
     <string name="no_password">La contraseña es incorrecta</string>
 
     <string name="des_img">Book image</string>
     <string name="des_title">Book title</string>
 
+    <string name="register_text">¿No tienes cuenta? ¡Registrate ahora!</string>
 
     <string name="title_name">Nombre usuario</string>
     <string name="title_age">Edad</string>
@@ -18,6 +19,7 @@
     <string name="title_password">Contraseña</string>
     <string name="title_password_old">Contraseña anterior </string>
     <string name="title_password_new">Contraseña nueva</string>
+    <string name="title_user_img">Imagen del usuario</string>
 
     <string name="default_age">Edad usuario</string>
     <string name="default_username">Username usuario</string>
@@ -28,11 +30,15 @@
 
     <string name="add_book">¡Crea una nueva reseña!</string>
     <string name="add_book_name">Nombre del libro</string>
+    <string name="book_name">Nombre</string>
     <string name="add_book_author">Autor</string>
     <string name="add_book_year">Año de publicación</string>
+    <string name="book_year">Año</string>
     <string name="add_book_rating">Valoración (del 1 al 10)</string>
+    <string name="book_rating">Valoración</string>
     <string name="add_book_commentary">Comentario</string>
     <string name="add_book_img">Imagen (URL)</string>
+    <string name="book_img">URL</string>
     <string name="add_book_recommend">¿Lo recomiendas?</string>
     <string name="add_book_recommend_yes">Si, lo recomiendo</string>
     <string name="add_book_recommend_no">No lo recomiendo</string>
@@ -63,5 +69,9 @@
 
     <string name="my_books">Mis reseñas</string>
     <string name="my_favs">Mis favoritos</string>
+
+    <string name="ic_fav">Favorito</string>
+    <string name="ic_edit">Editar</string>
+    <string name="ic_delete">Eliminar</string>
 
 </resources>

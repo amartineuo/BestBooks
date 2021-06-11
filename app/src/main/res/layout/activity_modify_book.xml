@@ -34,6 +34,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/modify_book"
+                    android:textColor="@color/color_secundario"
                     android:textSize="30sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -54,7 +55,7 @@
                         android:id="@+id/text_addBook_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
                         android:text="@string/add_book_name"
                         android:textSize="18sp"
@@ -64,11 +65,12 @@
                         android:id="@+id/edit_addBook_name"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="8dp"
+                        android:autofillHints=""
                         android:ems="10"
-                        android:hint="Nombre"
-                        android:inputType="textPersonName" />
+                        android:hint="@string/add_book_name"
+                        android:inputType="text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -81,7 +83,7 @@
                         android:id="@+id/text_addBook_author"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
                         android:text="@string/add_book_author"
                         android:textSize="18sp"
@@ -91,10 +93,11 @@
                         android:id="@+id/edit_addBook_author"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="8dp"
+                        android:autofillHints=""
                         android:ems="10"
-                        android:hint="Autor"
+                        android:hint="@string/add_book_author"
                         android:inputType="textPersonName" />
                 </LinearLayout>
 
@@ -108,7 +111,7 @@
                         android:id="@+id/text_addBook_year"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
                         android:text="@string/add_book_year"
                         android:textSize="18sp"
@@ -116,13 +119,14 @@
 
                     <EditText
                         android:id="@+id/edit_addBook_year"
-                        android:layout_width="300dp"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="8dp"
+                        android:autofillHints=""
                         android:ems="10"
-                        android:hint="Año"
-                        android:inputType="number" />
+                        android:hint="@string/book_year"
+                        android:inputType="numberDecimal" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -135,7 +139,7 @@
                         android:id="@+id/text_addBook_rating"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
                         android:text="@string/add_book_rating"
                         android:textSize="18sp"
@@ -143,12 +147,13 @@
 
                     <EditText
                         android:id="@+id/edit_addBook_rating"
-                        android:layout_width="300dp"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="8dp"
+                        android:autofillHints=""
                         android:ems="10"
-                        android:hint="Valoración"
+                        android:hint="@string/book_rating"
                         android:inputType="number" />
                 </LinearLayout>
 
@@ -162,7 +167,7 @@
                         android:id="@+id/text_addBook_commentary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
                         android:text="@string/add_book_commentary"
                         android:textSize="18sp"
@@ -172,15 +177,16 @@
                         android:id="@+id/edit_addBook_commentary"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="8dp"
+                        android:autofillHints=""
                         android:ems="10"
                         android:gravity="start|top"
-                        android:singleLine="false"
-                        android:hint="Comentario"
+                        android:hint="@string/add_book_commentary"
+                        android:inputType="textMultiLine"
                         android:lines="5"
                         android:scrollbars="vertical"
-                        android:inputType="textMultiLine" />
+                        android:singleLine="false" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -193,7 +199,7 @@
                         android:id="@+id/text_addBook_img"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
                         android:text="@string/add_book_img"
                         android:textSize="18sp"
@@ -203,10 +209,11 @@
                         android:id="@+id/edit_addBook_img"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="8dp"
+                        android:autofillHints=""
                         android:ems="10"
-                        android:hint="URL"
+                        android:hint="@string/book_img"
                         android:inputType="text" />
                 </LinearLayout>
 
@@ -220,7 +227,7 @@
                         android:id="@+id/text_addBook_recommend"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
                         android:text="@string/add_book_recommend"
                         android:textSize="18sp"
@@ -230,12 +237,13 @@
                         android:id="@+id/radio_group_button"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="20dp">
+                        android:layout_marginStart="20dp">
 
                         <RadioButton
                             android:id="@+id/radioButton_yes"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
                             android:text="@string/add_book_recommend_yes"
                             android:textSize="18sp" />
 
@@ -243,6 +251,7 @@
                             android:id="@+id/radioButton_no"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
                             android:text="@string/add_book_recommend_no"
                             android:textSize="18sp" />
                     </RadioGroup>
@@ -261,25 +270,31 @@
 
                         <Button
                             android:id="@+id/button_modify_ok"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="140dp"
+                            android:layout_height="60dp"
                             android:text="@string/modify"
+                            android:textSize="16sp"
+                            app:cornerRadius="30dip"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.232"
+                            app:layout_constraintHorizontal_bias="0.132"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.45" />
 
                         <Button
                             android:id="@+id/button_modify_no"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="140dp"
+                            android:layout_height="60dp"
                             android:text="@string/cancel"
+                            android:textSize="16sp"
+                            app:cornerRadius="30dip"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.765"
+                            app:layout_constraintHorizontal_bias="0.87"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.45999998" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>

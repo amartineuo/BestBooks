@@ -177,6 +177,11 @@ public class DetailBookActivity extends AppCompatActivity {
             @Override
             public void run() {
                 ProjectDatabase db = ProjectDatabase.getInstance(DetailBookActivity.this);
+
+                //Se borran los favoritos del book
+                db.getFavoriteDAO().deleteFavoritesByBook(book.getPostID());
+
+                //Se borra el book
                 db.getBookDAO().deleteBook(book);
 
                 Intent intentDelete = new Intent(DetailBookActivity.this, PrincipalActivity.class);

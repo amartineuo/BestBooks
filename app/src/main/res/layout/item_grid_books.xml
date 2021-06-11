@@ -5,27 +5,63 @@
     android:id="@+id/linear_adapter_grid"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical">
 
     <ImageView
         android:id="@+id/image_adapter_grid"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
-        android:maxHeight="10dp"
-        android:maxWidth="10dp"
         android:layout_margin="25dp"
         android:contentDescription="@string/des_img"
+        android:maxWidth="40dp"
+        android:maxHeight="40dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/text_adpter_grid"
         android:layout_width="150dp"
         android:layout_height="40dp"
-        android:autoSizeTextType="uniform"
         android:layout_gravity="center"
-        android:textAlignment="center"
-        android:text="@string/des_title"
         android:autoSizeMaxTextSize="18sp"
+        android:autoSizeTextType="uniform"
+        android:text="@string/des_title"
+        android:textAlignment="center"
+        android:textSize="16sp"
         android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/rating"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/rating_adapter_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="@string/rating"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="italic" />
+    </LinearLayout>
+
 </LinearLayout>
