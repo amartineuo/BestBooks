@@ -74,9 +74,8 @@ public class RegisterActivity extends AppCompatActivity {
                     //Iniciar la pagina principal una vez loggeado
                     Intent intent = new Intent(RegisterActivity.this, PrincipalActivity.class);
 
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("myUserID", myUserID);
-                    intent.putExtras(bundle);
+                    ClaseGlobal claseGlobal = (ClaseGlobal) getApplication().getApplicationContext();
+                    claseGlobal.setMyUserID(myUserID);
 
                     startActivity(intent);
                     finish();

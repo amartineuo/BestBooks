@@ -4,30 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.bestbooks.interfaceAPI.MyJsonServerAPI;
 import com.example.bestbooks.models.Book;
-import com.example.bestbooks.models.User;
 import com.example.bestbooks.roomdb.ProjectDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PrincipalActivity extends AppCompatActivity {
 
@@ -35,10 +25,14 @@ public class PrincipalActivity extends AppCompatActivity {
     List<Book> bookList = new ArrayList<>();
     RecyclerView recyclerView;
 
+    private static final int INTERVALO = 2000; //2 segundos para salir
+    private long tiempoPrimerClick;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
+
 
         //Instancia de la base de datos
         ProjectDatabase.getInstance(this);
@@ -47,11 +41,10 @@ public class PrincipalActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_books);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        //Informacion recibida del usuario registrado
-        Bundle bundleRecibido = getIntent().getExtras();
-        if(bundleRecibido != null){
-            myUserID = bundleRecibido.getInt("myUserID");
-        }
+
+        //Informacion del usuario registrado
+        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        myUserID = claseGlobal.getMyUserID();
 
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
@@ -77,11 +70,6 @@ public class PrincipalActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PrincipalActivity.this, AddBookActivity.class);
-
-                Bundle bundle = new Bundle();
-                bundle.putInt("myUserID", myUserID);
-                intent.putExtras(bundle);
-
                 startActivity(intent);
             }
         });
@@ -100,22 +88,11 @@ public class PrincipalActivity extends AppCompatActivity {
 
             case R.id.action_bar_profile:
                 Intent intentProfile = new Intent(this, ProfileActivity.class);
-
-                Bundle bundleProfile = new Bundle();
-                bundleProfile.putInt("myUserID", myUserID);
-                intentProfile.putExtras(bundleProfile);
-
                 startActivity(intentProfile);
-
                 return true;
 
             case R.id.action_bar_search:
                 Intent intentSearch = new Intent(this, SearchActivity.class);
-
-                Bundle bundleSearch = new Bundle();
-                bundleSearch.putInt("myUserID", myUserID);
-                intentSearch.putExtras(bundleSearch);
-
                 startActivity(intentSearch);
                 return true;
 
@@ -125,7 +102,12 @@ public class PrincipalActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        moveTaskToBack(true);
+    public void onBackPressed(){
+        if (tiempoPrimerClick + INTERVALO > System.currentTimeMillis()){
+            moveTaskToBack(true);
+        }else {
+            Toast.makeText(this, "Vuelve a presionar para salir", Toast.LENGTH_SHORT).show();
+        }
+        tiempoPrimerClick = System.currentTimeMillis();
     }
 }

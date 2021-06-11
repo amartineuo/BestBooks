@@ -5,26 +5,81 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".ClaseGlobal"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BestBooks">
-        <activity android:name=".UserFavsActivity"></activity>
-        <activity android:name=".UserBooksActivity" />
-        <activity android:name=".ModifyBookActivity" />
-        <activity android:name=".DetailBookActivity" />
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".ModifyProfileActivity" />
-        <activity android:name=".AddBookActivity" />
-        <activity android:name=".ProfileActivity" />
+        <activity
+            android:name=".UserFavsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ProfileActivity" />
+        </activity>
+
+        <activity
+            android:name=".UserBooksActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ProfileActivity" />
+        </activity>
+
+        <activity
+            android:name=".ModifyBookActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DetailBookActivity" />
+        </activity>
+
+        <activity
+            android:name=".DetailBookActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PrincipalActivity" />
+        </activity>
+
+        <activity
+            android:name=".SearchActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PrincipalActivity" />
+        </activity>
+
+        <activity
+            android:name=".RegisterActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
+        </activity>>
+
+        <activity
+            android:name=".ModifyProfileActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ProfileActivity" />
+        </activity>
+
+        <activity
+            android:name=".AddBookActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PrincipalActivity" />
+        </activity>
+
+        <activity
+            android:name=".ProfileActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PrincipalActivity" />
+        </activity>
+
         <activity android:name=".PrincipalActivity" />
+
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

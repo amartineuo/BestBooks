@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,9 +35,13 @@ public class DetailBookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_book);
 
-        //Recibido del intent
-        book = (Book) getIntent().getExtras().getSerializable("bookDetail");
-        myUserID = getIntent().getExtras().getInt("myUserID");
+
+        //Informacion del usuario registrado
+        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        myUserID = claseGlobal.getMyUserID();
+
+        //Informacion del libro sobre el que mostrar los detalles
+        book = claseGlobal.getBookAux();
 
 
         //INFORMACION DEL USUARIO QUE LO PUBLICO
@@ -102,10 +107,14 @@ public class DetailBookActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intentEdit = new Intent(DetailBookActivity.this, ModifyBookActivity.class);
 
+                /*
                 Bundle bundleEdit = new Bundle();
-                bundleEdit.putInt("myUserID", myUserID);
                 bundleEdit.putSerializable("bookEdit", book);
                 intentEdit.putExtras(bundleEdit);
+                 */
+
+                //ClaseGlobal claseGlobal = (ClaseGlobal) getApplication().getApplicationContext();
+                //claseGlobal.setBookAux(book);
 
                 startActivity(intentEdit);
             }
@@ -167,17 +176,10 @@ public class DetailBookActivity extends AppCompatActivity {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-
                 ProjectDatabase db = ProjectDatabase.getInstance(DetailBookActivity.this);
-
                 db.getBookDAO().deleteBook(book);
 
                 Intent intentDelete = new Intent(DetailBookActivity.this, PrincipalActivity.class);
-
-                Bundle bundleDelete = new Bundle();
-                bundleDelete.putInt("myUserID", myUserID);
-                intentDelete.putExtras(bundleDelete);
-
                 startActivity(intentDelete);
                 finish();
             }
@@ -234,5 +236,15 @@ public class DetailBookActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return  true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

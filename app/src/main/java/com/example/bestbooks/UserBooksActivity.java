@@ -9,7 +9,6 @@ import android.os.Bundle;
 import com.example.bestbooks.models.Book;
 import com.example.bestbooks.roomdb.ProjectDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserBooksActivity extends AppCompatActivity {
@@ -22,11 +21,9 @@ public class UserBooksActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_books);
 
-        //Informacion recibida del usuario registrado
-        Bundle bundleRecibido = getIntent().getExtras();
-        if(bundleRecibido != null){
-            myUserID = bundleRecibido.getInt("myUserID");
-        }
+        //Informacion del usuario registrado
+        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        myUserID = claseGlobal.getMyUserID();
 
         //Inicializacion del recyclerView
         recyclerView = findViewById(R.id.recycler_my_books);

@@ -22,12 +22,12 @@ public class ModifyBookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_book);
 
-        //Informacion recibida del libro y mi usuario
-        Bundle bundleRecibido = getIntent().getExtras();
-        if(bundleRecibido != null){
-            myUserID = bundleRecibido.getInt("myUserID");
-            bookEdit = (Book) bundleRecibido.getSerializable("bookEdit");
-        }
+        //Informacion del usuario registrado
+        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        myUserID = claseGlobal.getMyUserID();
+
+        //Informacion del libro a modificar
+        bookEdit = claseGlobal.getBookAux();
 
 
         EditText edit_addBook_name = (EditText)findViewById(R.id.edit_addBook_name);

@@ -35,11 +35,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
 
-        //Informacion recibida del usuario registrado
-        Bundle bundleRecibido = getIntent().getExtras();
-        if(bundleRecibido != null){
-            myUserID = bundleRecibido.getInt("myUserID");
-        }
+        //Informacion del usuario registrado
+        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        myUserID = claseGlobal.getMyUserID();
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override

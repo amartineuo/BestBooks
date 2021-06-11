@@ -24,11 +24,11 @@ public class AddBookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_book);
 
-        //Informacion recibida del usuario registrado
-        Bundle bundleRecibido = getIntent().getExtras();
-        if(bundleRecibido != null){
-            myUserID = bundleRecibido.getInt("myUserID");
-        }
+
+        //Informacion del usuario registrado
+        ClaseGlobal claseGlobal = (com.example.bestbooks.ClaseGlobal) getApplicationContext();
+        myUserID = claseGlobal.getMyUserID();
+
 
         Button button_add_book = (Button)findViewById(R.id.button_add_book);
         button_add_book.setOnClickListener(new View.OnClickListener() {

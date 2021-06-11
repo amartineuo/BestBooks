@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.bestbooks.models.Book;
 import com.example.bestbooks.models.Favorite;
@@ -24,11 +23,9 @@ public class UserFavsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_favs);
 
-        //Informacion recibida del usuario registrado
-        Bundle bundleRecibido = getIntent().getExtras();
-        if(bundleRecibido != null){
-            myUserID = bundleRecibido.getInt("myUserID");
-        }
+        //Informacion del usuario registrado
+        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        myUserID = claseGlobal.getMyUserID();
 
         //Inicializacion del recyclerView
         recyclerView = findViewById(R.id.recycler_my_favs);

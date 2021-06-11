@@ -27,11 +27,9 @@ public class ModifyProfileActivity extends AppCompatActivity {
         imageView.setImageResource(R.drawable.ic_person);
 
 
-        //Informacion recibida del usuario registrado
-        Bundle bundleRecibido = getIntent().getExtras();
-        if(bundleRecibido != null){
-            myUserID = bundleRecibido.getInt("myUserID");
-        }
+        //Informacion del usuario registrado
+        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        myUserID = claseGlobal.getMyUserID();
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override

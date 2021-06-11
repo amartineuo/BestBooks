@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.bestbooks.interfaceAPI.MyJsonServerAPI;
 import com.example.bestbooks.models.Book;
 import com.example.bestbooks.models.Favorite;
@@ -24,6 +26,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final int INTERVALO = 2000; //2 segundos para salir
+    private long tiempoPrimerClick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +88,8 @@ public class LoginActivity extends AppCompatActivity {
                             //Iniciar la pagina principal una vez loggeado
                             Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
 
-                            Bundle bundle = new Bundle();
-                            bundle.putInt("myUserID", user.getId());
-                            intent.putExtras(bundle);
+                            ClaseGlobal claseGlobal = (ClaseGlobal) getApplication().getApplicationContext();
+                            claseGlobal.setMyUserID(user.getId());
 
                             startActivity(intent);
                             finish();
@@ -235,5 +239,15 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("Login - NO SUCESSFUL", "onFailure");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed(){
+        if (tiempoPrimerClick + INTERVALO > System.currentTimeMillis()){
+            moveTaskToBack(true);
+        }else {
+            Toast.makeText(this, "Vuelve a presionar para salir", Toast.LENGTH_SHORT).show();
+        }
+        tiempoPrimerClick = System.currentTimeMillis();
     }
 }
