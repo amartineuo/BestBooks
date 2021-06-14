@@ -2,22 +2,23 @@ package com.example.bestbooks;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
-import com.example.bestbooks.models.Book;
-import com.example.bestbooks.models.User;
-import com.example.bestbooks.roomdb.ProjectDatabase;
+import com.example.bestbooks.data.models.Book;
+import com.example.bestbooks.data.network.ProjectNetworkDataSource;
+import com.example.bestbooks.data.repositories.BookRepository;
+import com.example.bestbooks.data.roomdb.ProjectDatabase;
+
 
 public class AddBookActivity extends AppCompatActivity {
 
     private int myUserID;
+
+    private BookRepository bookRepository;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +72,17 @@ public class AddBookActivity extends AppCompatActivity {
                     }
                 }
 
-                Book newBook = new Book(myUserID, rating, bookName, author, year, commentary, img, recommend);
+                Book newBook = new Book(myUserID, rating, bookName, author, year, commentary, img, recommend, 0);
 
+                //Obtiene instancia del repository
+                bookRepository = BookRepository.getInstance(ProjectDatabase.getInstance(AddBookActivity.this).getBookDAO(), ProjectNetworkDataSource.getInstance());
+
+                //Insertar book
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
-                        ProjectDatabase db = ProjectDatabase.getInstance(AddBookActivity.this);
-                            db.getBookDAO().insertBook(newBook);
+
+                        bookRepository.insertBook(newBook);
                     }
                 });
 

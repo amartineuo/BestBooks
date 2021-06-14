@@ -1,6 +1,7 @@
 package com.example.bestbooks;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -10,12 +11,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.bestbooks.models.User;
-import com.example.bestbooks.roomdb.ProjectDatabase;
+import com.example.bestbooks.data.models.User;
+import com.example.bestbooks.data.network.ProjectNetworkDataSource;
+import com.example.bestbooks.data.repositories.UserRepository;
+import com.example.bestbooks.data.roomdb.ProjectDatabase;
 
 public class ModifyProfileActivity extends AppCompatActivity {
 
     private int myUserID;
+
+    private UserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,51 +36,38 @@ public class ModifyProfileActivity extends AppCompatActivity {
         ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
 
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+        //Obtiene instancia del repository
+        userRepository = UserRepository.getInstance(ProjectDatabase.getInstance(this).getUserDAO(), ProjectNetworkDataSource.getInstance());
+
+        userRepository.getUserByID(myUserID).observe(this, new Observer<User>() {
             @Override
-            public void run() {
-                ProjectDatabase db = ProjectDatabase.getInstance(ModifyProfileActivity.this);
+            public void onChanged(User user) {
+                EditText new_name = findViewById(R.id.new_name);
+                new_name.setText(user.getName());
 
-                //Usuario loggeado recuperado de la BD con el identificador
-                User user = db.getUserDAO().getUserByID(myUserID);
+                EditText new_username = findViewById(R.id.new_username);
+                new_username.setText(user.getUsername());
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        EditText new_name = findViewById(R.id.new_name);
-                        new_name.setText(user.getName());
+                EditText new_age = findViewById(R.id.new_age);
+                new_age.setText(String.valueOf(user.getEdad()));
 
-                        EditText new_username = findViewById(R.id.new_username);
-                        new_username.setText(user.getUsername());
+                EditText new_email = findViewById(R.id.new_email);
+                new_email.setText(user.getEmail());
 
-                        EditText new_age = findViewById(R.id.new_age);
-                        new_age.setText(String.valueOf(user.getEdad()));
-
-                        EditText new_email = findViewById(R.id.new_email);
-                        new_email.setText(user.getEmail());
-
-                        EditText last_password = findViewById(R.id.last_password);
-                        last_password.setText(user.getPassword());
-                    }
-                });
+                EditText last_password = findViewById(R.id.last_password);
+                last_password.setText(user.getPassword());
             }
         });
 
-
+        //Aceptar modificacion
         Button button_accept_edit = findViewById(R.id.button_accept_edit);
         button_accept_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                userRepository.getUserByID(myUserID).observe(ModifyProfileActivity.this, new Observer<User>() {
                     @Override
-                    public void run() {
-                        ProjectDatabase db = ProjectDatabase.getInstance(ModifyProfileActivity.this);
-
-                        //Usuario loggeado recuperado de la BD con el identificador
-                        User newUser = db.getUserDAO().getUserByID(myUserID);
-
-
+                    public void onChanged(User newUser) {
                         String newName, newUsername, newEmail, lastPassword, newPassword, finalPassword;
                         int newAge;
 
@@ -100,8 +92,6 @@ public class ModifyProfileActivity extends AppCompatActivity {
                         Log.d("lastPassword - ", lastPassword);
                         Log.d("newPassword - ", newPassword);
 
-
-
                         if(newPassword.length()!=0 && lastPassword.equals(newUser.getPassword())){
                             newUser.setName(newName);
                             newUser.setUsername(newUsername);
@@ -117,7 +107,12 @@ public class ModifyProfileActivity extends AppCompatActivity {
                             newUser.setPassword(lastPassword);
                         }
 
-                        db.getUserDAO().updateUser(newUser);
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                userRepository.updateUser(newUser);
+                            }
+                        });
                         finish();
                     }
                 });
@@ -125,6 +120,7 @@ public class ModifyProfileActivity extends AppCompatActivity {
             }
         });
 
+        //Cancelar modificacion
         Button button_cancel_edit = findViewById(R.id.button_cancel_edit);
         button_cancel_edit.setOnClickListener(new View.OnClickListener() {
             @Override

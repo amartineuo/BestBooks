@@ -2,7 +2,7 @@ package com.example.bestbooks;
 
 import android.app.Application;
 
-import com.example.bestbooks.models.Book;
+import com.example.bestbooks.data.models.Book;
 
 public class ClaseGlobal extends Application {
 

@@ -1,8 +1,7 @@
-package com.example.bestbooks;
+package com.example.bestbooks.adapter;
 
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.bestbooks.models.Book;
+import com.example.bestbooks.ClaseGlobal;
+import com.example.bestbooks.DetailBookActivity;
+import com.example.bestbooks.ImageLoadTask;
+import com.example.bestbooks.R;
+import com.example.bestbooks.data.models.Book;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,7 +109,6 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
 
     public void filter(String search){
         if (search.length() == 0){
-            //bookList.clear();
             originalBookList.addAll(bookList);
         }
         else{

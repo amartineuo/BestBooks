@@ -1,21 +1,28 @@
 package com.example.bestbooks;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.bestbooks.models.User;
-import com.example.bestbooks.roomdb.ProjectDatabase;
+import com.example.bestbooks.data.models.User;
+import com.example.bestbooks.data.network.ProjectNetworkDataSource;
+import com.example.bestbooks.data.repositories.UserRepository;
+import com.example.bestbooks.data.roomdb.ProjectDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    private UserRepository userRepository;
+    List<User> usersList = new ArrayList<>();
+    private boolean insert = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
                 password = reg_new_password.getText().toString();
 
                 if (username.length() > 0 && name.length() > 0 && email.length() > 0 && password.length() > 0){
-                    User newUser = new User(username, name, age, email, password);
+                    User newUser = new User(username, name, age, email, password, 0);
                     comprobarUsuario(newUser);
                 }
             }
@@ -59,29 +66,42 @@ public class RegisterActivity extends AppCompatActivity {
 
         TextView error_register = findViewById(R.id.error_register);
 
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                ProjectDatabase db = ProjectDatabase.getInstance(RegisterActivity.this);
+        //Obtiene instancia del repository
+        userRepository = UserRepository.getInstance(ProjectDatabase.getInstance(this).getUserDAO(), ProjectNetworkDataSource.getInstance());
 
-                List<User> users = db.getUserDAO().getUserByEmail(newUser.getEmail());
+        userRepository.getUserByEmail(newUser.getEmail()).observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                usersList.clear();
+                usersList.addAll(users);
+
+                error_register.setVisibility(View.INVISIBLE);
 
                 //No existe usuario registrado con ese email
-                if(users.size() == 0){
-                    runOnUiThread(() -> error_register.setVisibility(View.INVISIBLE));
-                    int myUserID = (int) db.getUserDAO().insertUser(newUser);
+                if(usersList.size() == 0 && !insert){
+                    insert=true;
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
 
-                    //Iniciar la pagina principal una vez loggeado
-                    Intent intent = new Intent(RegisterActivity.this, PrincipalActivity.class);
+                            runOnUiThread(() -> error_register.setVisibility(View.INVISIBLE));
+                            int myUserID = (int) userRepository.insertUser(newUser);
 
-                    ClaseGlobal claseGlobal = (ClaseGlobal) getApplication().getApplicationContext();
-                    claseGlobal.setMyUserID(myUserID);
+                            //Iniciar la pagina principal una vez loggeado
+                            Intent intent = new Intent(RegisterActivity.this, PrincipalActivity.class);
 
-                    startActivity(intent);
-                    finish();
+                            ClaseGlobal claseGlobal = (ClaseGlobal) getApplication().getApplicationContext();
+                            claseGlobal.setMyUserID(myUserID);
+
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
                 }
                 else { //Usuario si existe
-                    runOnUiThread(() -> error_register.setVisibility(View.VISIBLE));
+                    if(!insert) {
+                        error_register.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });

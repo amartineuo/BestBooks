@@ -126,7 +126,7 @@
                         android:autofillHints=""
                         android:ems="10"
                         android:hint="@string/book_year"
-                        android:inputType="numberDecimal" />
+                        android:inputType="number" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -154,7 +154,7 @@
                         android:autofillHints=""
                         android:ems="10"
                         android:hint="@string/book_rating"
-                        android:inputType="number" />
+                        android:inputType="numberDecimal" />
                 </LinearLayout>
 
                 <LinearLayout

@@ -2,6 +2,7 @@ package com.example.bestbooks;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,15 +13,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.bestbooks.models.Book;
-import com.example.bestbooks.models.User;
-import com.example.bestbooks.roomdb.ProjectDatabase;
+import com.example.bestbooks.data.models.Book;
+import com.example.bestbooks.data.models.User;
+import com.example.bestbooks.data.network.ProjectNetworkDataSource;
+import com.example.bestbooks.data.repositories.BookRepository;
+import com.example.bestbooks.data.repositories.FavoriteRepository;
+import com.example.bestbooks.data.repositories.UserRepository;
+import com.example.bestbooks.data.roomdb.ProjectDatabase;
 
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private int myUserID;
+
+    private UserRepository userRepository;
+    private FavoriteRepository favoriteRepository;
+    private BookRepository bookRepository;
+
+    private boolean borrado = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,30 +49,26 @@ public class ProfileActivity extends AppCompatActivity {
         myUserID = claseGlobal.getMyUserID();
 
 
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+        //Obtiene instancia del repository
+        userRepository = UserRepository.getInstance(ProjectDatabase.getInstance(this).getUserDAO(), ProjectNetworkDataSource.getInstance());
+
+        userRepository.getUserByID(myUserID).observe(this, new Observer<User>() {
             @Override
-            public void run() {
-                ProjectDatabase db = ProjectDatabase.getInstance(ProfileActivity.this);
+            public void onChanged(User user) {
 
-                //Usuario loggeado recuperado de la BD con el identificador
-                User user = db.getUserDAO().getUserByID(myUserID);
+                if(!borrado) {
+                    TextView view_name_profile = findViewById(R.id.view_name_profile);
+                    view_name_profile.setText(user.getName());
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TextView view_name_profile = findViewById(R.id.view_name_profile);
-                        view_name_profile.setText(user.getName());
+                    TextView view_age = findViewById(R.id.view_age);
+                    view_age.setText(String.valueOf(user.getEdad()));
 
-                        TextView view_age = findViewById(R.id.view_age);
-                        view_age.setText(String.valueOf(user.getEdad()));
+                    TextView view_username = findViewById(R.id.view_username);
+                    view_username.setText(user.getUsername());
 
-                        TextView view_username = findViewById(R.id.view_username);
-                        view_username.setText(user.getUsername());
-
-                        TextView view_email = findViewById(R.id.view_email);
-                        view_email.setText(user.getEmail());
-                    }
-                });
+                    TextView view_email = findViewById(R.id.view_email);
+                    view_email.setText(user.getEmail());
+                }
             }
         });
 
@@ -75,6 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
         //ELIMINAR CUENTA
         ImageView delete_profile = (ImageView)findViewById(R.id.delete_profile);
@@ -103,6 +111,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+
         //MIS PUBLICACIONES
         Button button_my_books = findViewById(R.id.button_my_books);
         button_my_books.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+
         //MIS FAVORITOS
         Button button_my_favs = findViewById(R.id.button_my_favs);
         button_my_favs.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
         //CERRAR SESION
         Button button_logout = findViewById(R.id.button_logout);
@@ -134,31 +145,53 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"¡Hasta la proxima!",Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     public void eliminarCuenta(){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                ProjectDatabase db = ProjectDatabase.getInstance(ProfileActivity.this);
+        if(!borrado) {
+            userRepository.getUserByID(myUserID).observe(this, new Observer<User>() {
+                @Override
+                public void onChanged(User user) {
+                    borrarBooksAndFavorites(user);
 
-                //Usuario loggeado recuperado de la BD con el identificador
-                User user = db.getUserDAO().getUserByID(myUserID);
-
-                //Se borran los books y favoritos a ese book perteneciente al usuario
-                List<Book> allBooks = db.getBookDAO().getAllBooks();
-                for (Book book : allBooks){
-                    if (book.getUserID() == myUserID){
-                        db.getBookDAO().deleteBook(book);
-                        db.getFavoriteDAO().deleteFavoritesByBook(book.getPostID());
-                    }
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(!borrado) {
+                                borrado = true;
+                                user.setDeleteUser(1); //1 = borrado
+                                userRepository.updateUser(user);
+                            }
+                        }
+                    });
                 }
+            });
+        }
+    }
 
-                //Se elimina el usuario
-                db.getUserDAO().deleteUser(user);
+    //Se borran los books y los favoritos a ese book del usuario a eliminar
+    private void borrarBooksAndFavorites(User user){
+
+        //Obtiene instancia del repository
+        favoriteRepository = FavoriteRepository.getInstance(ProjectDatabase.getInstance(this).getFavoriteDAO(), ProjectNetworkDataSource.getInstance());
+
+        //Obtiene instancia del repository
+        bookRepository = BookRepository.getInstance(ProjectDatabase.getInstance(this).getBookDAO(), ProjectNetworkDataSource.getInstance());
+
+        bookRepository.getAllCurrentBooksByUser(myUserID).observe(this, new Observer<List<Book>>() {
+            @Override
+            public void onChanged(List<Book> books) {
+                for(Book book : books){
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            book.setDeleteBook(1); //1 = borrado
+                            bookRepository.updateBook(book);
+                            favoriteRepository.deleteFavoritesByBook(book.getPostID());
+                        }
+                    });
+                }
             }
         });
     }
-
 }

@@ -1,4 +1,4 @@
-package com.example.bestbooks.roomdb;
+package com.example.bestbooks.data.roomdb;
 
 import android.content.Context;
 
@@ -6,9 +6,9 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.bestbooks.models.Book;
-import com.example.bestbooks.models.Favorite;
-import com.example.bestbooks.models.User;
+import com.example.bestbooks.data.models.Book;
+import com.example.bestbooks.data.models.Favorite;
+import com.example.bestbooks.data.models.User;
 
 @Database(entities = {User.class, Book.class, Favorite.class}, version = 1)
 public abstract class ProjectDatabase extends RoomDatabase {

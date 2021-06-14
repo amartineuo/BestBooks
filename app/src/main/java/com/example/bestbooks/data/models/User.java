@@ -1,4 +1,4 @@
-package com.example.bestbooks.models;
+package com.example.bestbooks.data.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -27,12 +27,16 @@ public class User implements Serializable {
     @ColumnInfo(name = "password")
     private String password;
 
-    public User(String username, String name, int edad, String email, String password) {
+    @ColumnInfo(name = "deleteUser")
+    private int deleteUser; //0 no borrado; 1 borrado
+
+    public User(String username, String name, int edad, String email, String password, int deleteUser) {
         this.username = username;
         this.name = name;
         this.edad = edad;
         this.email = email;
         this.password = password;
+        this.deleteUser = deleteUser;
     }
 
     public int getId() {
@@ -81,5 +85,13 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getDeleteUser() {
+        return deleteUser;
+    }
+
+    public void setDeleteUser(int deleteUser) {
+        this.deleteUser = deleteUser;
     }
 }

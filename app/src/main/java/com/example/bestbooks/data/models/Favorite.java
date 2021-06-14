@@ -1,4 +1,4 @@
-package com.example.bestbooks.models;
+package com.example.bestbooks.data.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -16,9 +16,13 @@ public class Favorite {
     @ColumnInfo(name = "bookFav")
     int bookFav;
 
-    public Favorite(int userFav, int bookFav) {
+    @ColumnInfo(name = "deleteFav")
+    private int deleteFav; //0 no borrado; 1 borrado
+
+    public Favorite(int userFav, int bookFav, int deleteFav) {
         this.userFav = userFav;
         this.bookFav = bookFav;
+        this.deleteFav = deleteFav;
     }
 
     public int getId() {
@@ -43,5 +47,13 @@ public class Favorite {
 
     public void setBookFav(int bookFav) {
         this.bookFav = bookFav;
+    }
+
+    public int getDeleteFav() {
+        return deleteFav;
+    }
+
+    public void setDeleteFav(int deleteFav) {
+        this.deleteFav = deleteFav;
     }
 }

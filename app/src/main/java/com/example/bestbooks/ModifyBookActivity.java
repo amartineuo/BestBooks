@@ -1,6 +1,7 @@
 package com.example.bestbooks;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,13 +10,19 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.example.bestbooks.models.Book;
-import com.example.bestbooks.roomdb.ProjectDatabase;
+import com.example.bestbooks.data.models.Book;
+import com.example.bestbooks.data.network.ProjectNetworkDataSource;
+import com.example.bestbooks.data.repositories.BookRepository;
+import com.example.bestbooks.data.roomdb.ProjectDatabase;
 
 public class ModifyBookActivity extends AppCompatActivity {
 
     private int myUserID;
+
     private Book bookEdit;
+
+    private BookRepository bookRepository;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +35,18 @@ public class ModifyBookActivity extends AppCompatActivity {
 
         //Informacion del libro a modificar
         bookEdit = claseGlobal.getBookAux();
+
+
+        //Obtiene instancia del repository
+        bookRepository = BookRepository.getInstance(ProjectDatabase.getInstance(this).getBookDAO(), ProjectNetworkDataSource.getInstance());
+
+        //devuelve LiveData que podemos observar
+        bookRepository.getBookByID(bookEdit.getPostID()).observe(this, new Observer<Book>() {
+            @Override
+            public void onChanged(Book book) {
+                bookEdit = book;
+            }
+        });
 
 
         EditText edit_addBook_name = (EditText)findViewById(R.id.edit_addBook_name);
@@ -59,7 +78,7 @@ public class ModifyBookActivity extends AppCompatActivity {
             radioButton_no.setChecked(true);
         }
 
-
+        //Aceptar modificacion
         Button button_modify_ok = (Button)findViewById(R.id.button_modify_ok);
         button_modify_ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,8 +124,7 @@ public class ModifyBookActivity extends AppCompatActivity {
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
-                        ProjectDatabase db = ProjectDatabase.getInstance(ModifyBookActivity.this);
-                        db.getBookDAO().updateBook(bookEdit);
+                        bookRepository.updateBook(bookEdit);
                     }
                 });
                 finish();
@@ -114,6 +132,7 @@ public class ModifyBookActivity extends AppCompatActivity {
             }
         });
 
+        //Cancelar modificacion
         Button button_modify_no = findViewById(R.id.button_modify_no);
         button_modify_no.setOnClickListener(new View.OnClickListener() {
             @Override

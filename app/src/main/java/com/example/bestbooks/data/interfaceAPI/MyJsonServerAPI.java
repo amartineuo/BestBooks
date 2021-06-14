@@ -1,8 +1,8 @@
-package com.example.bestbooks.interfaceAPI;
+package com.example.bestbooks.data.interfaceAPI;
 
-import com.example.bestbooks.models.Book;
-import com.example.bestbooks.models.Favorite;
-import com.example.bestbooks.models.User;
+import com.example.bestbooks.data.models.Book;
+import com.example.bestbooks.data.models.Favorite;
+import com.example.bestbooks.data.models.User;
 
 import java.util.List;
 

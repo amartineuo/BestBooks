@@ -1,4 +1,4 @@
-package com.example.bestbooks.models;
+package com.example.bestbooks.data.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -34,9 +34,12 @@ public class Book implements Serializable {
     private String img;
 
     @ColumnInfo(name = "recommend")
-    private int recommend;
+    private int recommend; //0 si recomendado; 1 no recomendado
 
-    public Book(int userID, float rating, String bookName, String author, String year, String commentary, String img, int recommend) {
+    @ColumnInfo(name = "deleteBook")
+    private int deleteBook; //0 no borrado; 1 borrado
+
+    public Book(int userID, float rating, String bookName, String author, String year, String commentary, String img, int recommend, int deleteBook) {
         this.userID = userID;
         this.rating = rating;
         this.bookName = bookName;
@@ -45,6 +48,7 @@ public class Book implements Serializable {
         this.commentary = commentary;
         this.img = img;
         this.recommend = recommend;
+        this.deleteBook = deleteBook;
     }
 
     public int getPostID() {
@@ -118,4 +122,8 @@ public class Book implements Serializable {
     public void setImg(String img) {
         this.img = img;
     }
+
+    public int getDeleteBook() { return deleteBook; }
+
+    public void setDeleteBook(int deleteBook) { this.deleteBook = deleteBook; }
 }
