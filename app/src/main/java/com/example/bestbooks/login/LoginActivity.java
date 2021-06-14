@@ -1,7 +1,8 @@
-package com.example.bestbooks;
+package com.example.bestbooks.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bestbooks.AppContainer;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.R;
+import com.example.bestbooks.register.RegisterActivity;
 import com.example.bestbooks.data.models.User;
-import com.example.bestbooks.data.network.ProjectNetworkDataSource;
-import com.example.bestbooks.data.repositories.UserRepository;
-import com.example.bestbooks.data.roomdb.ProjectDatabase;
+import com.example.bestbooks.principal.PrincipalActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final int INTERVALO = 2000; //2 segundos para salir
     private long tiempoPrimerClick;
 
-    private UserRepository userRepository;
+
     List<User> usersList = new ArrayList<>();
 
     @Override
@@ -63,10 +66,11 @@ public class LoginActivity extends AppCompatActivity {
         TextView text_error_email = findViewById(R.id.text_user_no_exit);
 
 
-        //Obtiene instancia del repository
-        userRepository = UserRepository.getInstance(ProjectDatabase.getInstance(this).getUserDAO(), ProjectNetworkDataSource.getInstance());
+        //Se crea una instancia de la clase contenedora  y el VM
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+        LoginViewModel loginVM = new ViewModelProvider(this, appContainer.loginVMFactory).get(LoginViewModel.class);
 
-        userRepository.getUserByEmail(email).observe(this, new Observer<List<User>>() {
+        loginVM.getUserByEmail(email).observe(this, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
                 usersList.clear();
@@ -90,7 +94,8 @@ public class LoginActivity extends AppCompatActivity {
                             //Iniciar la pagina principal una vez loggeado
                             Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
 
-                            ClaseGlobal claseGlobal = (ClaseGlobal) getApplication().getApplicationContext();
+                            //Registrar informacion del usuario loggeado
+                            MyApplication claseGlobal = (MyApplication) getApplicationContext();
                             claseGlobal.setMyUserID(user.getId());
 
                             startActivity(intent);

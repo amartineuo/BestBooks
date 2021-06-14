@@ -13,7 +13,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bestbooks.ClaseGlobal;
-import com.example.bestbooks.DetailBookActivity;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.detailBook.DetailBookActivity;
 import com.example.bestbooks.ImageLoadTask;
 import com.example.bestbooks.R;
 import com.example.bestbooks.data.models.Book;
@@ -59,7 +60,10 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
             public void onClick(View v) {
                 Intent intent = new Intent(holder.itemView.getContext(), DetailBookActivity.class);
 
-                ClaseGlobal claseGlobal = (ClaseGlobal) v.getContext().getApplicationContext();
+                //ClaseGlobal claseGlobal = (ClaseGlobal) v.getContext().getApplicationContext();
+                //claseGlobal.setBookAux(bookList.get(position));
+
+                MyApplication claseGlobal = (MyApplication) v.getContext().getApplicationContext();
                 claseGlobal.setBookAux(bookList.get(position));
 
                 holder.itemView.getContext().startActivity(intent);
@@ -109,7 +113,7 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
 
     public void filter(String search){
         if (search.length() == 0){
-            originalBookList.addAll(bookList);
+            //No se hace nada con la lista
         }
         else{
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

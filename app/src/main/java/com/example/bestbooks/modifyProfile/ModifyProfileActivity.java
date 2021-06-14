@@ -1,7 +1,8 @@
-package com.example.bestbooks;
+package com.example.bestbooks.modifyProfile;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,16 +12,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.bestbooks.AppContainer;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.R;
+
 import com.example.bestbooks.data.models.User;
-import com.example.bestbooks.data.network.ProjectNetworkDataSource;
-import com.example.bestbooks.data.repositories.UserRepository;
-import com.example.bestbooks.data.roomdb.ProjectDatabase;
+
 
 public class ModifyProfileActivity extends AppCompatActivity {
 
     private int myUserID;
 
-    private UserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +35,17 @@ public class ModifyProfileActivity extends AppCompatActivity {
 
 
         //Informacion del usuario registrado
-        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
 
-        //Obtiene instancia del repository
-        userRepository = UserRepository.getInstance(ProjectDatabase.getInstance(this).getUserDAO(), ProjectNetworkDataSource.getInstance());
 
-        userRepository.getUserByID(myUserID).observe(this, new Observer<User>() {
+
+        //Se crea una instancia de la clase contenedora  y el VM
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+        ModifyProfileViewModel modifyProfileVM = new ViewModelProvider(this, appContainer.modifyProfileVMFactory).get(ModifyProfileViewModel.class);
+
+
+        modifyProfileVM.getUserByID(myUserID).observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 EditText new_name = findViewById(R.id.new_name);
@@ -59,13 +65,14 @@ public class ModifyProfileActivity extends AppCompatActivity {
             }
         });
 
+
         //Aceptar modificacion
         Button button_accept_edit = findViewById(R.id.button_accept_edit);
         button_accept_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                userRepository.getUserByID(myUserID).observe(ModifyProfileActivity.this, new Observer<User>() {
+                modifyProfileVM.getUserByID(myUserID).observe(ModifyProfileActivity.this, new Observer<User>() {
                     @Override
                     public void onChanged(User newUser) {
                         String newName, newUsername, newEmail, lastPassword, newPassword, finalPassword;
@@ -107,15 +114,11 @@ public class ModifyProfileActivity extends AppCompatActivity {
                             newUser.setPassword(lastPassword);
                         }
 
-                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                userRepository.updateUser(newUser);
-                            }
-                        });
+                        modifyProfileVM.updateUser(newUser);
                         finish();
                     }
                 });
+
                 Toast.makeText(getApplicationContext(),"Cambios guardados",Toast.LENGTH_SHORT).show();
             }
         });

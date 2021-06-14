@@ -1,8 +1,9 @@
-package com.example.bestbooks;
+package com.example.bestbooks.profile;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,13 +14,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bestbooks.AppContainer;
+import com.example.bestbooks.modifyProfile.ModifyProfileActivity;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.R;
+import com.example.bestbooks.userBooks.UserBooksActivity;
+import com.example.bestbooks.userFavs.UserFavsActivity;
 import com.example.bestbooks.data.models.Book;
 import com.example.bestbooks.data.models.User;
-import com.example.bestbooks.data.network.ProjectNetworkDataSource;
-import com.example.bestbooks.data.repositories.BookRepository;
-import com.example.bestbooks.data.repositories.FavoriteRepository;
-import com.example.bestbooks.data.repositories.UserRepository;
-import com.example.bestbooks.data.roomdb.ProjectDatabase;
+import com.example.bestbooks.login.LoginActivity;
 
 import java.util.List;
 
@@ -27,11 +30,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     private int myUserID;
 
-    private UserRepository userRepository;
-    private FavoriteRepository favoriteRepository;
-    private BookRepository bookRepository;
-
     private boolean borrado = false;
+
+    private  ProfileViewModel profileVM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +46,18 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         //Informacion del usuario registrado
-        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
 
 
-        //Obtiene instancia del repository
-        userRepository = UserRepository.getInstance(ProjectDatabase.getInstance(this).getUserDAO(), ProjectNetworkDataSource.getInstance());
+        //Se crea una instancia de la clase contenedora  y el VM
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+        profileVM = new ViewModelProvider(this, appContainer.profileVMFactory).get(ProfileViewModel.class);
 
-        userRepository.getUserByID(myUserID).observe(this, new Observer<User>() {
+
+        profileVM.getUserByID(myUserID).observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
-
                 if(!borrado) {
                     TextView view_name_profile = findViewById(R.id.view_name_profile);
                     view_name_profile.setText(user.getName());
@@ -71,6 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
 
 
         //MODIFICAR PERFIL
@@ -148,22 +151,18 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void eliminarCuenta(){
+
         if(!borrado) {
-            userRepository.getUserByID(myUserID).observe(this, new Observer<User>() {
+
+            profileVM.getUserByID(myUserID).observe(this, new Observer<User>() {
                 @Override
                 public void onChanged(User user) {
                     borrarBooksAndFavorites(user);
-
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(!borrado) {
-                                borrado = true;
-                                user.setDeleteUser(1); //1 = borrado
-                                userRepository.updateUser(user);
-                            }
-                        }
-                    });
+                    if(!borrado) {
+                        borrado = true;
+                        user.setDeleteUser(1); //1 = borrado
+                        profileVM.updateUser(user);
+                    }
                 }
             });
         }
@@ -172,24 +171,15 @@ public class ProfileActivity extends AppCompatActivity {
     //Se borran los books y los favoritos a ese book del usuario a eliminar
     private void borrarBooksAndFavorites(User user){
 
-        //Obtiene instancia del repository
-        favoriteRepository = FavoriteRepository.getInstance(ProjectDatabase.getInstance(this).getFavoriteDAO(), ProjectNetworkDataSource.getInstance());
-
-        //Obtiene instancia del repository
-        bookRepository = BookRepository.getInstance(ProjectDatabase.getInstance(this).getBookDAO(), ProjectNetworkDataSource.getInstance());
-
-        bookRepository.getAllCurrentBooksByUser(myUserID).observe(this, new Observer<List<Book>>() {
+        profileVM.getAllCurrentBooksByUser(myUserID).observe(this, new Observer<List<Book>>() {
             @Override
             public void onChanged(List<Book> books) {
+
                 for(Book book : books){
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            book.setDeleteBook(1); //1 = borrado
-                            bookRepository.updateBook(book);
-                            favoriteRepository.deleteFavoritesByBook(book.getPostID());
-                        }
-                    });
+                    book.setDeleteBook(1); //1 = borrado
+
+                    profileVM.updateBook(book);
+                    profileVM.deleteFavoritesByBook(book.getPostID());
                 }
             }
         });

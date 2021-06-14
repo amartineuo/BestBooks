@@ -1,8 +1,9 @@
-package com.example.bestbooks;
+package com.example.bestbooks.principal;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,11 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.bestbooks.addBook.AddBookActivity;
+import com.example.bestbooks.AppContainer;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.profile.ProfileActivity;
+import com.example.bestbooks.R;
+import com.example.bestbooks.search.SearchActivity;
 import com.example.bestbooks.adapter.AdapterRecycler;
 import com.example.bestbooks.data.models.Book;
-import com.example.bestbooks.data.network.ProjectNetworkDataSource;
-import com.example.bestbooks.data.repositories.BookRepository;
-import com.example.bestbooks.data.roomdb.ProjectDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -32,7 +36,6 @@ public class PrincipalActivity extends AppCompatActivity {
     private static final int INTERVALO = 2000; //2 segundos para salir
     private long tiempoPrimerClick;
 
-    private BookRepository bookRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,24 +48,24 @@ public class PrincipalActivity extends AppCompatActivity {
 
 
         //Informacion del usuario registrado
-        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
 
 
-        //Obtiene instancia del repository
-        bookRepository = BookRepository.getInstance(ProjectDatabase.getInstance(this).getBookDAO(), ProjectNetworkDataSource.getInstance());
+        //Se crea una instancia de la clase contenedora  y el VM
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+        PrincipalViewModel principalVM = new ViewModelProvider(this, appContainer.principalVMFactory).get(PrincipalViewModel.class);
 
-        //devuelve LiveData que podemos observar
-        bookRepository.getAllCurrentBooks().observe(this, new Observer<List<Book>>() {
+
+        principalVM.getAllCurrentBooks().observe(this, new Observer<List<Book>>() {
             @Override
-            public void onChanged(List<Book> books) { //se llama automaticamente cada vez que los datos del liveData cambien
+            public void onChanged(List<Book> books) {
                 bookList.clear();
                 bookList.addAll(books);
                 AdapterRecycler adapterRecycler = new AdapterRecycler(bookList, myUserID);
                 runOnUiThread(() ->recyclerView.setAdapter(adapterRecycler));
             }
         });
-
 
         //Button para add un book
         FloatingActionButton fab = findViewById(R.id.fabPrincipal);

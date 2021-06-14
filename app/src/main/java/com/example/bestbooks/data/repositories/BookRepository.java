@@ -70,11 +70,11 @@ public class BookRepository {
 
     //Insertar book
     public void insertBook(Book book){
-        mBookDao.insertBook(book);
+        AppExecutors.getInstance().diskIO().execute(() -> mBookDao.insertBook(book));
     }
 
     //Actualizar book
     public void updateBook(Book book){
-        mBookDao.updateBook(book);
+        AppExecutors.getInstance().diskIO().execute(() -> mBookDao.updateBook(book));
     }
 }

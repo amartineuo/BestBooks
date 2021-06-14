@@ -1,6 +1,7 @@
-package com.example.bestbooks;
+package com.example.bestbooks.addBook;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.View;
@@ -8,27 +9,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
+import com.example.bestbooks.AppContainer;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.R;
 import com.example.bestbooks.data.models.Book;
-import com.example.bestbooks.data.network.ProjectNetworkDataSource;
-import com.example.bestbooks.data.repositories.BookRepository;
-import com.example.bestbooks.data.roomdb.ProjectDatabase;
 
 
 public class AddBookActivity extends AppCompatActivity {
 
     private int myUserID;
 
-    private BookRepository bookRepository;
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_book);
 
-
         //Informacion del usuario registrado
-        ClaseGlobal claseGlobal = (com.example.bestbooks.ClaseGlobal) getApplicationContext();
+        MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
+
+
+        //Se crea una instancia de la clase contenedora  y el VM
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+        AddBookViewModel addBookVM = new ViewModelProvider(this, appContainer.addBookVMFactory).get(AddBookViewModel.class);
+
+
 
 
         Button button_add_book = (Button)findViewById(R.id.button_add_book);
@@ -74,17 +79,8 @@ public class AddBookActivity extends AppCompatActivity {
 
                 Book newBook = new Book(myUserID, rating, bookName, author, year, commentary, img, recommend, 0);
 
-                //Obtiene instancia del repository
-                bookRepository = BookRepository.getInstance(ProjectDatabase.getInstance(AddBookActivity.this).getBookDAO(), ProjectNetworkDataSource.getInstance());
 
-                //Insertar book
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        bookRepository.insertBook(newBook);
-                    }
-                });
+                addBookVM.insertBook(newBook);
 
                 finish();
             }

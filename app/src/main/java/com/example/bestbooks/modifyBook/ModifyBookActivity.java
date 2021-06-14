@@ -1,7 +1,8 @@
-package com.example.bestbooks;
+package com.example.bestbooks.modifyBook;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,10 +11,11 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.example.bestbooks.AppContainer;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.R;
 import com.example.bestbooks.data.models.Book;
-import com.example.bestbooks.data.network.ProjectNetworkDataSource;
-import com.example.bestbooks.data.repositories.BookRepository;
-import com.example.bestbooks.data.roomdb.ProjectDatabase;
+
 
 public class ModifyBookActivity extends AppCompatActivity {
 
@@ -21,27 +23,28 @@ public class ModifyBookActivity extends AppCompatActivity {
 
     private Book bookEdit;
 
-    private BookRepository bookRepository;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_book);
 
+
         //Informacion del usuario registrado
-        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
+
 
         //Informacion del libro a modificar
         bookEdit = claseGlobal.getBookAux();
 
 
-        //Obtiene instancia del repository
-        bookRepository = BookRepository.getInstance(ProjectDatabase.getInstance(this).getBookDAO(), ProjectNetworkDataSource.getInstance());
+        //Se crea una instancia de la clase contenedora  y el VM
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+        ModifyBookViewModel modifyBookVM = new ViewModelProvider(this, appContainer.modifyBookVMFactory).get(ModifyBookViewModel.class);
 
-        //devuelve LiveData que podemos observar
-        bookRepository.getBookByID(bookEdit.getPostID()).observe(this, new Observer<Book>() {
+
+        modifyBookVM.getBookByID(bookEdit.getPostID()).observe(this, new Observer<Book>() {
             @Override
             public void onChanged(Book book) {
                 bookEdit = book;
@@ -121,12 +124,8 @@ public class ModifyBookActivity extends AppCompatActivity {
                 bookEdit.setRecommend(recommend);
 
 
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        bookRepository.updateBook(bookEdit);
-                    }
-                });
+                modifyBookVM.updateBook(bookEdit);
+
                 finish();
                 Toast.makeText(getApplicationContext(),"Cambios guardados",Toast.LENGTH_SHORT).show();
             }

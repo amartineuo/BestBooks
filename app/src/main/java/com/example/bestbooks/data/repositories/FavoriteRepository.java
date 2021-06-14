@@ -60,7 +60,7 @@ public class FavoriteRepository {
 
     //Elimina los favoritos de un book
     public void deleteFavoritesByBook(int bookID) {
-        mFavoriteDao.deleteFavoritesByBook(bookID);
+        AppExecutors.getInstance().diskIO().execute(() ->  mFavoriteDao.deleteFavoritesByBook(bookID));
     }
 
     //Comprobar fav de usuario y un book
@@ -70,7 +70,7 @@ public class FavoriteRepository {
 
     //Insertar favorito
     public void insertFavorite(Favorite favorite) {
-        mFavoriteDao.insertFavorite(favorite);
+        AppExecutors.getInstance().diskIO().execute(() ->  mFavoriteDao.insertFavorite(favorite));
     }
 
     //Eliminar favorito
@@ -80,6 +80,6 @@ public class FavoriteRepository {
 
     //Modifica un favorito
     public void updateFavorite(Favorite favorite) {
-        mFavoriteDao.updateFavorite(favorite);
+        AppExecutors.getInstance().diskIO().execute(() ->  mFavoriteDao.updateFavorite(favorite));
     }
 }

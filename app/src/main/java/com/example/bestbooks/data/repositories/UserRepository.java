@@ -71,12 +71,12 @@ public class UserRepository {
 
     //Inserta un usuario
     public long insertUser(User user){
-        return mUserDao.insertUser(user);
+          return  mUserDao.insertUser(user);
     }
 
     //Actualizar un usuario
     public void updateUser(User user){
-        mUserDao.updateUser(user);
+        AppExecutors.getInstance().diskIO().execute(() -> mUserDao.updateUser(user));
     }
 
 }

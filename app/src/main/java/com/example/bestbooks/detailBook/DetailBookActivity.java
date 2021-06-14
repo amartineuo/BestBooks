@@ -1,10 +1,13 @@
-package com.example.bestbooks;
+package com.example.bestbooks.detailBook;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,14 +17,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bestbooks.AppContainer;
+import com.example.bestbooks.ImageLoadTask;
+import com.example.bestbooks.login.LoginActivity;
+import com.example.bestbooks.modifyBook.ModifyBookActivity;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.R;
 import com.example.bestbooks.data.models.Book;
 import com.example.bestbooks.data.models.Favorite;
 import com.example.bestbooks.data.models.User;
-import com.example.bestbooks.data.network.ProjectNetworkDataSource;
-import com.example.bestbooks.data.repositories.BookRepository;
-import com.example.bestbooks.data.repositories.FavoriteRepository;
-import com.example.bestbooks.data.repositories.UserRepository;
-import com.example.bestbooks.data.roomdb.ProjectDatabase;
+import com.example.bestbooks.principal.PrincipalActivity;
+import com.example.bestbooks.profile.ProfileActivity;
 
 public class DetailBookActivity extends AppCompatActivity {
 
@@ -34,12 +40,11 @@ public class DetailBookActivity extends AppCompatActivity {
     ImageView imageView_edit_book;
     ImageView imageView_delete_book;
 
-    private BookRepository bookRepository;
-    private UserRepository userRepository;
-    private FavoriteRepository favoriteRepository;
     private boolean borrado = false;
     private boolean borradoFav = false;
     private boolean quieroBorrar = false;
+
+    private  DetailBookViewModel detailBookVM;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -47,22 +52,23 @@ public class DetailBookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_book);
 
-
         //Informacion del usuario registrado
-        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
 
         //Informacion del libro sobre el que mostrar los detalles
         actualBook = claseGlobal.getBookAux();
 
 
+
+        //Se crea una instancia de la clase contenedora  y el VM
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+        detailBookVM = new ViewModelProvider(this, appContainer.detailBookVMFactory).get(DetailBookViewModel.class);
+
         //----------INFORMACION DEL LIBRO-----------
 
-        //Obtiene instancia del repository
-        bookRepository = BookRepository.getInstance(ProjectDatabase.getInstance(this).getBookDAO(), ProjectNetworkDataSource.getInstance());
 
-        //devuelve LiveData que podemos observar
-        bookRepository.getBookByID(actualBook.getPostID()).observe(this, new Observer<Book>() {
+        detailBookVM.getBookByID(actualBook.getPostID()).observe(this, new Observer<Book>() {
             @Override
             public void onChanged(Book book) {
                 actualBook = book;
@@ -116,30 +122,28 @@ public class DetailBookActivity extends AppCompatActivity {
         imageView_edit_book = findViewById(R.id.imageView_edit_book);
         imageView_delete_book = findViewById(R.id.imageView_delete_book);
 
-        //Obtiene instancia del repository
-        userRepository = UserRepository.getInstance(ProjectDatabase.getInstance(this).getUserDAO(), ProjectNetworkDataSource.getInstance());
 
-        userRepository.getUserByID(actualBook.getUserID()).observe(this, new Observer<User>() {
+        detailBookVM.getUserByID(actualBook.getUserID()).observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
-
                 TextView textView_name = findViewById(R.id.textView_name);
                 textView_name.setText(user.getUsername());
 
                 if (myUserID == user.getId()){ //Es una publicacion mia (puedo editar)
 
-                        imageView_edit_book.setVisibility(View.VISIBLE);
-                        imageView_delete_book.setVisibility(View.VISIBLE);
-                        imageView_favorite_no.setVisibility(View.INVISIBLE);
-                        imageView_favorite_yes.setVisibility(View.INVISIBLE);
+                    imageView_edit_book.setVisibility(View.VISIBLE);
+                    imageView_delete_book.setVisibility(View.VISIBLE);
+                    imageView_favorite_no.setVisibility(View.INVISIBLE);
+                    imageView_favorite_yes.setVisibility(View.INVISIBLE);
 
                 }
                 else{ //No es una publicacion mia (puedo dar fav)
-                        imageView_edit_book.setVisibility(View.INVISIBLE);
-                        imageView_delete_book.setVisibility(View.INVISIBLE);
+                    imageView_edit_book.setVisibility(View.INVISIBLE);
+                    imageView_delete_book.setVisibility(View.INVISIBLE);
                 }
             }
         });
+
 
         //Si no es mi book se comprueban los favoritos
         if(actualBook.getUserID() != myUserID){
@@ -177,36 +181,42 @@ public class DetailBookActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 deleteBook();
-                //finish();
-                Toast.makeText(getApplicationContext(),"Reseña eliminada correctamente",Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
     public void deleteBook(){
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                if(!borrado) {
+        if(!borrado) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(DetailBookActivity.this);
+            builder.setTitle("Eliminar reseña");
+            builder.setMessage("¿Seguro que desea eliminar esta reseña? (Los datos se eliminarán de forma permanente)");
+
+            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
                     //Se actualiza el campo delete del book a 1 (borrado)
                     actualBook.setDeleteBook(1);
-                    bookRepository.updateBook(actualBook);
+                    detailBookVM.updateBook(actualBook);
                     borrado = true;
 
                     Intent intentDelete = new Intent(DetailBookActivity.this, PrincipalActivity.class);
                     startActivity(intentDelete);
                     finish();
+
+                    Toast.makeText(getApplicationContext(),"Reseña eliminada correctamente",Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+
+            builder.setNegativeButton("Cancelar", null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 
     public void comprobarFav(){
-        //Obtiene instancia del repository
-        favoriteRepository = FavoriteRepository.getInstance(ProjectDatabase.getInstance(this).getFavoriteDAO(), ProjectNetworkDataSource.getInstance());
 
-        favoriteRepository.getFavByUserAndBook(myUserID, actualBook.getPostID()).observe(this, new Observer<Favorite>() {
+        detailBookVM.getFavByUserAndBook(myUserID, actualBook.getPostID()).observe(this, new Observer<Favorite>() {
             @Override
             public void onChanged(Favorite favorite) {
 
@@ -228,50 +238,31 @@ public class DetailBookActivity extends AppCompatActivity {
     public void ponerQuitarFav(int cod){
 
         if(cod == 0){ //add fav
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    if(borradoFav) {
-                        Favorite favAdd = new Favorite(myUserID, actualBook.getPostID(), 0);
-                        favoriteRepository.insertFavorite(favAdd);
+            if(borradoFav) {
+                Favorite favAdd = new Favorite(myUserID, actualBook.getPostID(), 0);
+                detailBookVM.insertFavorite(favAdd);
 
-                        Log.d("Detalle", "Insertar Fav");
-                        runOnUiThread(() -> {
-                            imageView_favorite_yes.setVisibility(View.VISIBLE);
-                            imageView_favorite_no.setVisibility(View.INVISIBLE);
-                        });
-                        borradoFav = false;
+                Log.d("Detalle", "Insertar Fav");
+                imageView_favorite_yes.setVisibility(View.VISIBLE);
+                imageView_favorite_no.setVisibility(View.INVISIBLE);
+                borradoFav = false;
+            }
+        }
+        else{
+            detailBookVM.getFavByUserAndBook(myUserID, actualBook.getPostID()).observe(this, new Observer<Favorite>() {
+                @Override
+                public void onChanged(Favorite favorite) {
+                    if (quieroBorrar) {
+                        favorite.setDeleteFav(1); //1 = borrado
+                        detailBookVM.updateFavorite(favorite);
+
+                        Log.d("Detalle", "Borrar Fav");
+                        imageView_favorite_no.setVisibility(View.VISIBLE);
+                        imageView_favorite_yes.setVisibility(View.INVISIBLE);
+                        quieroBorrar = false;
                     }
                 }
             });
-
-        }
-        else{ //delete fav
-            favoriteRepository.getFavByUserAndBook(myUserID, actualBook.getPostID()).observe(DetailBookActivity.this, new Observer<Favorite>() {
-                @Override
-                public void onChanged(Favorite favDelete) {
-
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (quieroBorrar) {
-                                favDelete.setDeleteFav(1); //1 = borrado
-                                favoriteRepository.updateFavorite(favDelete);
-
-                                Log.d("Detalle", "Borrar Fav");
-                                runOnUiThread(() -> {
-                                    imageView_favorite_no.setVisibility(View.VISIBLE);
-                                    imageView_favorite_yes.setVisibility(View.INVISIBLE);
-                                });
-
-                                quieroBorrar = false;
-                            }
-                        }
-                    });
-
-                }
-            });
-
         }
     }
 

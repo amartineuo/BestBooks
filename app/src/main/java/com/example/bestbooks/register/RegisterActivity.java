@@ -1,7 +1,8 @@
-package com.example.bestbooks;
+package com.example.bestbooks.register;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,17 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.bestbooks.AppContainer;
+import com.example.bestbooks.AppExecutors;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.R;
 import com.example.bestbooks.data.models.User;
-import com.example.bestbooks.data.network.ProjectNetworkDataSource;
-import com.example.bestbooks.data.repositories.UserRepository;
-import com.example.bestbooks.data.roomdb.ProjectDatabase;
+import com.example.bestbooks.principal.PrincipalActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private UserRepository userRepository;
     List<User> usersList = new ArrayList<>();
     private boolean insert = false;
 
@@ -66,10 +68,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         TextView error_register = findViewById(R.id.error_register);
 
-        //Obtiene instancia del repository
-        userRepository = UserRepository.getInstance(ProjectDatabase.getInstance(this).getUserDAO(), ProjectNetworkDataSource.getInstance());
 
-        userRepository.getUserByEmail(newUser.getEmail()).observe(this, new Observer<List<User>>() {
+        //Se crea una instancia de la clase contenedora  y el VM
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+        RegisterViewModel registerVM = new ViewModelProvider(this, appContainer.registerVMFactory).get(RegisterViewModel.class);
+
+
+        registerVM.getUserByEmail(newUser.getEmail()).observe(this, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
                 usersList.clear();
@@ -78,28 +83,24 @@ public class RegisterActivity extends AppCompatActivity {
                 error_register.setVisibility(View.INVISIBLE);
 
                 //No existe usuario registrado con ese email
-                if(usersList.size() == 0 && !insert){
-                    insert=true;
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
+                if (usersList.size() == 0 && !insert) {
+                    insert = true;
 
-                            runOnUiThread(() -> error_register.setVisibility(View.INVISIBLE));
-                            int myUserID = (int) userRepository.insertUser(newUser);
+                    AppExecutors.getInstance().diskIO().execute(() -> {
+                        runOnUiThread(() -> error_register.setVisibility(View.INVISIBLE));
+                        int myUserID = (int) registerVM.insertUser(newUser);
 
-                            //Iniciar la pagina principal una vez loggeado
-                            Intent intent = new Intent(RegisterActivity.this, PrincipalActivity.class);
+                        //Registrar informacion del usuario loggeado
+                        MyApplication claseGlobal = (MyApplication) getApplicationContext();
+                        claseGlobal.setMyUserID(myUserID);
 
-                            ClaseGlobal claseGlobal = (ClaseGlobal) getApplication().getApplicationContext();
-                            claseGlobal.setMyUserID(myUserID);
-
-                            startActivity(intent);
-                            finish();
-                        }
+                        //Iniciar la pagina principal una vez loggeado
+                        Intent intent = new Intent(RegisterActivity.this, PrincipalActivity.class);
+                        startActivity(intent);
+                        finish();
                     });
-                }
-                else { //Usuario si existe
-                    if(!insert) {
+                } else { //Usuario si existe
+                    if (!insert) {
                         error_register.setVisibility(View.VISIBLE);
                     }
                 }

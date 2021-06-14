@@ -1,7 +1,8 @@
-package com.example.bestbooks;
+package com.example.bestbooks.search;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,11 +12,11 @@ import android.widget.Button;
 
 import androidx.appcompat.widget.SearchView;
 
+import com.example.bestbooks.AppContainer;
+import com.example.bestbooks.MyApplication;
+import com.example.bestbooks.R;
 import com.example.bestbooks.adapter.AdapterRecycler;
 import com.example.bestbooks.data.models.Book;
-import com.example.bestbooks.data.network.ProjectNetworkDataSource;
-import com.example.bestbooks.data.repositories.BookRepository;
-import com.example.bestbooks.data.roomdb.ProjectDatabase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,8 +29,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     RecyclerView recyclerView;
     private int myUserID;
 
-    private BookRepository bookRepository;
     List<Book> bookList = new ArrayList<>();
+
+    SearchViewModel searchVM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,23 +46,26 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
 
         //Informacion del usuario registrado
-        ClaseGlobal claseGlobal = (ClaseGlobal) getApplicationContext();
+        MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
 
 
-        //Obtiene instancia del repository
-        bookRepository = BookRepository.getInstance(ProjectDatabase.getInstance(this).getBookDAO(), ProjectNetworkDataSource.getInstance());
+        //Se crea una instancia de la clase contenedora  y el VM
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+        searchVM = new ViewModelProvider(this, appContainer.searchVMFactory).get(SearchViewModel.class);
 
-        //devuelve LiveData que podemos observar
-        bookRepository.getAllCurrentBooks().observe(this, new Observer<List<Book>>() {
+
+        searchVM.getAllCurrentBooks().observe(this, new Observer<List<Book>>() {
             @Override
-            public void onChanged(List<Book> books) { //se llama automaticamente cada vez que los datos del liveData cambien
+            public void onChanged(List<Book> books) {
                 bookList.clear();
                 bookList.addAll(books);
                 AdapterRecycler adapterRecycler = new AdapterRecycler(bookList, myUserID);
-                runOnUiThread(() ->recyclerView.setAdapter(adapterRecycler));
+                recyclerView.setAdapter(adapterRecycler);
             }
         });
+
+
 
         //ORDENAR DE MAYOR A MENOR
         Button button_rating_mayor = findViewById(R.id.button_rating_mayor);
@@ -112,14 +117,13 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     public boolean onQueryTextChange(String newText) {
         //escucha cada vez que escribimos una letra en el searchview
 
-        //devuelve LiveData que podemos observar
-        bookRepository.getAllCurrentBooks().observe(this, new Observer<List<Book>>() {
+        searchVM.getAllCurrentBooks().observe(this, new Observer<List<Book>>() {
             @Override
-            public void onChanged(List<Book> books) { //se llama automaticamente cada vez que los datos del liveData cambien
+            public void onChanged(List<Book> books) {
                 bookList.clear();
                 bookList.addAll(books);
                 AdapterRecycler adapterRecycler = new AdapterRecycler(bookList, myUserID);
-                runOnUiThread(() ->recyclerView.setAdapter(adapterRecycler));
+                recyclerView.setAdapter(adapterRecycler);
                 adapterRecycler.filter(newText);
             }
         });
