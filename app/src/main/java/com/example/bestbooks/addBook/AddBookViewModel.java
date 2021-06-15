@@ -18,5 +18,4 @@ public class AddBookViewModel extends ViewModel {
         mBookRepository.insertBook(book);
     }
 
-
 }

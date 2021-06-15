@@ -15,7 +15,6 @@ public abstract class ProjectDatabase extends RoomDatabase {
 
     public static ProjectDatabase instance;
 
-
     public static ProjectDatabase getInstance(Context context){
         if (instance == null){
             instance = Room.databaseBuilder(context, ProjectDatabase.class, "BestBooks.db").build();

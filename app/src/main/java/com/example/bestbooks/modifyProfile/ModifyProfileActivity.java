@@ -23,7 +23,6 @@ public class ModifyProfileActivity extends AppCompatActivity {
 
     private int myUserID;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +36,6 @@ public class ModifyProfileActivity extends AppCompatActivity {
         //Informacion del usuario registrado
         MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
-
 
 
         //Se crea una instancia de la clase contenedora  y el VM
@@ -66,7 +64,7 @@ public class ModifyProfileActivity extends AppCompatActivity {
         });
 
 
-        //Aceptar modificacion
+        //ACEPTAR MODIFICACION
         Button button_accept_edit = findViewById(R.id.button_accept_edit);
         button_accept_edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,9 +94,6 @@ public class ModifyProfileActivity extends AppCompatActivity {
                         EditText last_password = findViewById(R.id.last_password);
                         lastPassword = last_password.getText().toString();
 
-                        Log.d("lastPassword - ", lastPassword);
-                        Log.d("newPassword - ", newPassword);
-
                         if(newPassword.length()!=0 && lastPassword.equals(newUser.getPassword())){
                             newUser.setName(newName);
                             newUser.setUsername(newUsername);
@@ -123,7 +118,7 @@ public class ModifyProfileActivity extends AppCompatActivity {
             }
         });
 
-        //Cancelar modificacion
+        //CANCELAR MODIFICACION
         Button button_cancel_edit = findViewById(R.id.button_cancel_edit);
         button_cancel_edit.setOnClickListener(new View.OnClickListener() {
             @Override

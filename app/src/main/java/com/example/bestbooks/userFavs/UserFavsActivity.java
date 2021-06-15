@@ -75,7 +75,6 @@ public class UserFavsActivity extends AppCompatActivity {
                     AdapterRecycler adapterRecycler = new AdapterRecycler(favsUser, myUserID);
                     recyclerView.setAdapter(adapterRecycler);
                 }
-
             }
         });
     }

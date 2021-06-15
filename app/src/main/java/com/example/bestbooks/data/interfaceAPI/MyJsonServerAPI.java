@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
+//Interfaz con la BD remota
 public interface MyJsonServerAPI {
 
     @GET("users")

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.example.bestbooks.AppContainer;
 import com.example.bestbooks.MyApplication;
@@ -34,8 +35,7 @@ public class AddBookActivity extends AppCompatActivity {
         AddBookViewModel addBookVM = new ViewModelProvider(this, appContainer.addBookVMFactory).get(AddBookViewModel.class);
 
 
-
-
+        //CREAR EL BOOK
         Button button_add_book = (Button)findViewById(R.id.button_add_book);
         button_add_book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,10 +57,8 @@ public class AddBookActivity extends AppCompatActivity {
                 EditText edit_addBook_rating = (EditText)findViewById(R.id.edit_addBook_rating);
                 rating = Float.valueOf(edit_addBook_rating.getText().toString());
 
-
                 EditText edit_addBook_commentary = (EditText)findViewById(R.id.edit_addBook_commentary);
                 commentary = edit_addBook_commentary.getText().toString();
-
 
                 EditText edit_addBook_img = (EditText)findViewById(R.id.edit_addBook_img);
                 img = edit_addBook_img.getText().toString();
@@ -79,10 +77,12 @@ public class AddBookActivity extends AppCompatActivity {
 
                 Book newBook = new Book(myUserID, rating, bookName, author, year, commentary, img, recommend, 0);
 
-
+                //Insertar el nuevo book
                 addBookVM.insertBook(newBook);
 
+                //Finalizar activity
                 finish();
+                Toast.makeText(getApplicationContext(),"Reseña creada correctamente",Toast.LENGTH_LONG).show();
             }
         });
     }

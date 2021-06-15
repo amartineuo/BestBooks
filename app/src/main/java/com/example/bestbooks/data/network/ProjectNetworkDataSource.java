@@ -35,7 +35,6 @@ public class ProjectNetworkDataSource {
 
         mDownloadedFavorites = new MutableLiveData<>();
         fetchFavorites(); //Cuando se crea la fuente de datos se inicializa con los favoritos
-
     }
 
     public synchronized static ProjectNetworkDataSource getInstance() {

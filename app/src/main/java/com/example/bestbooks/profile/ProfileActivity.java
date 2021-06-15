@@ -75,7 +75,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-
         //MODIFICAR PERFIL
         ImageView modify_profile = findViewById(R.id.modify_profile);
         modify_profile.setOnClickListener(new View.OnClickListener() {
@@ -151,9 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void eliminarCuenta(){
-
         if(!borrado) {
-
             profileVM.getUserByID(myUserID).observe(this, new Observer<User>() {
                 @Override
                 public void onChanged(User user) {
@@ -161,7 +158,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if(!borrado) {
                         borrado = true;
                         user.setDeleteUser(1); //1 = borrado
-                        profileVM.updateUser(user);
+                        profileVM.updateUser(user); //Actualizar usuario (Ha borrado)
                     }
                 }
             });
@@ -170,15 +167,13 @@ public class ProfileActivity extends AppCompatActivity {
 
     //Se borran los books y los favoritos a ese book del usuario a eliminar
     private void borrarBooksAndFavorites(User user){
-
         profileVM.getAllCurrentBooksByUser(myUserID).observe(this, new Observer<List<Book>>() {
             @Override
             public void onChanged(List<Book> books) {
 
                 for(Book book : books){
                     book.setDeleteBook(1); //1 = borrado
-
-                    profileVM.updateBook(book);
+                    profileVM.updateBook(book); //Actualizar book (ha borrado)
                     profileVM.deleteFavoritesByBook(book.getPostID());
                 }
             }

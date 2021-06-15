@@ -20,7 +20,7 @@ public class UsersLoaderRunnable implements Runnable{
 
     @Override
     public void run() {
-        //Cargar users de la API
+        //Cargar usuarios de la BD remota
 
         //Crear instancia de Retrofit y add el convertidor GSON
         Retrofit retrofit = new Retrofit.Builder()

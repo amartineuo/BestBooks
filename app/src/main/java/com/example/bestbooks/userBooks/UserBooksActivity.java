@@ -35,7 +35,6 @@ public class UserBooksActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_books);
 
-
         //Inicializacion del recyclerView
         recyclerView = findViewById(R.id.recycler_my_books);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -43,7 +42,6 @@ public class UserBooksActivity extends AppCompatActivity {
         //Informacion del usuario registrado
         MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
-
 
         //Se crea una instancia de la clase contenedora  y el VM
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
@@ -61,7 +59,7 @@ public class UserBooksActivity extends AppCompatActivity {
         });
 
 
-        //Button para add un book
+        //BOTON PARA CREAR UN BOOK
         FloatingActionButton fab = findViewById(R.id.fabUserBooks);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

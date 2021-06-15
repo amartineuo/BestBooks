@@ -20,7 +20,7 @@ public class FavoritesLoaderRunnable implements Runnable{
 
     @Override
     public void run() {
-        //Cargar favoritos de la API
+        //Cargar favoritos de la BD Remota
 
         //Crear instancia de Retrofit y add el convertidor GSON
         Retrofit retrofit = new Retrofit.Builder()

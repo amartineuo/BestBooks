@@ -60,11 +60,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    //COMPROBAR USUARIO
     private void comprobarUsuario(String email, String password){
 
         TextView text_error_password = findViewById(R.id.text_user_no_password);
         TextView text_error_email = findViewById(R.id.text_user_no_exit);
-
 
         //Se crea una instancia de la clase contenedora  y el VM
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
@@ -75,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onChanged(List<User> users) {
                 usersList.clear();
                 usersList.addAll(users);
+
                 //No existe usuario registrado con ese email
                 if(usersList.size() == 0 || usersList.get(0).getDeleteUser() == 1){
                     text_error_password.setVisibility(View.INVISIBLE);

@@ -3,7 +3,6 @@ package com.example.bestbooks;
 import android.content.Context;
 
 import com.example.bestbooks.addBook.AddBookVMFactory;
-import com.example.bestbooks.data.models.Favorite;
 import com.example.bestbooks.data.network.ProjectNetworkDataSource;
 import com.example.bestbooks.data.repositories.BookRepository;
 import com.example.bestbooks.data.repositories.FavoriteRepository;
@@ -14,7 +13,6 @@ import com.example.bestbooks.login.LoginVMFactory;
 import com.example.bestbooks.modifyBook.ModifyBookVMFactory;
 import com.example.bestbooks.modifyProfile.ModifyProfileVMFactory;
 import com.example.bestbooks.principal.PrincipalVMFactory;
-import com.example.bestbooks.principal.PrincipalViewModel;
 import com.example.bestbooks.profile.ProfileVMFactory;
 import com.example.bestbooks.register.RegisterVMFactory;
 import com.example.bestbooks.search.SearchVMFactory;
@@ -48,7 +46,6 @@ public class AppContainer {
     public SearchVMFactory searchVMFactory;
 
 
-
     public AppContainer(Context context){
 
         databaseRoom = ProjectDatabase.getInstance(context);
@@ -73,7 +70,5 @@ public class AppContainer {
         registerVMFactory = new RegisterVMFactory(userRepository);
         userFavsVMFactory = new UserFavsVMFactory(bookRepository, favoriteRepository);
         searchVMFactory = new SearchVMFactory(bookRepository);
-
     }
-
 }

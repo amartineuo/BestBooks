@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.bestbooks.ClaseGlobal;
 import com.example.bestbooks.MyApplication;
 import com.example.bestbooks.detailBook.DetailBookActivity;
 import com.example.bestbooks.ImageLoadTask;
@@ -38,7 +37,7 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
     @NonNull
     @Override
     public ViewHolderRecycler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //Enlace el adapter con el archivo del item_grid_books
+        //Enlace del adapter con el archivo del item_grid_books
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_books, null, false);
         return new ViewHolderRecycler(view);
@@ -46,8 +45,8 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderRecycler holder, int position) {
-
         //Comunica el adaptador y el viewHolder
+
         try {
             holder.asignarBooks(bookList.get(position));
         } catch (IOException e) {
@@ -59,9 +58,6 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(holder.itemView.getContext(), DetailBookActivity.class);
-
-                //ClaseGlobal claseGlobal = (ClaseGlobal) v.getContext().getApplicationContext();
-                //claseGlobal.setBookAux(bookList.get(position));
 
                 MyApplication claseGlobal = (MyApplication) v.getContext().getApplicationContext();
                 claseGlobal.setBookAux(bookList.get(position));
@@ -78,21 +74,20 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
     }
 
     public class ViewHolderRecycler extends RecyclerView.ViewHolder {
-
         ImageView image_adapter_grid;
         TextView text_adpter_grid;
         TextView rating_adapter_grid;
 
         public ViewHolderRecycler(@NonNull View itemView) {
             super(itemView);
-
             image_adapter_grid = itemView.findViewById(R.id.image_adapter_grid);
             text_adpter_grid = itemView.findViewById(R.id.text_adpter_grid);
             rating_adapter_grid = itemView.findViewById(R.id.rating_adapter_grid);
         }
 
-
+        //Asigna la informacion de un libro a la vista
         public void asignarBooks(Book book) throws IOException {
+
             //Establecer imagen
             new ImageLoadTask(book.getImg().toString(), image_adapter_grid).execute();
 
@@ -106,11 +101,13 @@ public class  AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewH
             else{
                 rating_adapter_grid.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.green));
             }
-            rating_adapter_grid.setText(String.valueOf(book.getRating()));
 
+            //Establecer valoracion
+            rating_adapter_grid.setText(String.valueOf(book.getRating()));
         }
     }
 
+    //Filtrado de los libros cuando se realiza una busqueda
     public void filter(String search){
         if (search.length() == 0){
             //No se hace nada con la lista

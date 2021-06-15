@@ -53,10 +53,4 @@ public class DetailBookViewModel extends ViewModel {
         mFavoriteRepository.updateFavorite(favorite);
     }
 
-    /*
-    public LiveData<List<Book>> getAllCurrentBooks(){
-        return mBookRepository.getAllCurrentBooks();
-    }
-
-     */
 }

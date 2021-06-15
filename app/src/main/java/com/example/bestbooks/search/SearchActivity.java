@@ -66,7 +66,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         });
 
 
-
         //ORDENAR DE MAYOR A MENOR
         Button button_rating_mayor = findViewById(R.id.button_rating_mayor);
         button_rating_mayor.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +74,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                 ordenar(0);
             }
         });
+
 
         //ORDENADOR DE MENOR A MAYOR
         Button button_rating_menor = findViewById(R.id.button_rating_menor);
@@ -86,11 +86,10 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         });
     }
 
+    //METODO PARA ORDENAR
     //0 - de mayor a menor; 1 de menor a mayor
     public void ordenar(int ord){
-
         Collections.sort(bookList, new Comparator<Book>(){
-
             @Override
             public int compare(Book b1, Book b2) {
                 if(ord == 0) {
@@ -101,7 +100,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                 }
             }
         });
-
         AdapterRecycler adapterRecycler = new AdapterRecycler(bookList, myUserID);
         runOnUiThread(() ->recyclerView.setAdapter(adapterRecycler));
     }
@@ -115,7 +113,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        //escucha cada vez que escribimos una letra en el searchview
+        //Escucha cada vez que escribimos una letra en el searchview
 
         searchVM.getAllCurrentBooks().observe(this, new Observer<List<Book>>() {
             @Override

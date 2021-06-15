@@ -31,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-
+        //BOTON PARA REGISTRAR USUARIO
         Button button_register = findViewById(R.id.button_register);
         button_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +39,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                 String name, username, email, password;
                 int age;
-
 
                 EditText reg_new_username = findViewById(R.id.reg_new_username);
                 username = reg_new_username.getText().toString();
@@ -68,11 +67,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         TextView error_register = findViewById(R.id.error_register);
 
-
         //Se crea una instancia de la clase contenedora  y el VM
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
         RegisterViewModel registerVM = new ViewModelProvider(this, appContainer.registerVMFactory).get(RegisterViewModel.class);
-
 
         registerVM.getUserByEmail(newUser.getEmail()).observe(this, new Observer<List<User>>() {
             @Override

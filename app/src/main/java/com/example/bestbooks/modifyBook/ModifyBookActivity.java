@@ -23,21 +23,17 @@ public class ModifyBookActivity extends AppCompatActivity {
 
     private Book bookEdit;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_book);
 
-
         //Informacion del usuario registrado
         MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
 
-
         //Informacion del libro a modificar
         bookEdit = claseGlobal.getBookAux();
-
 
         //Se crea una instancia de la clase contenedora  y el VM
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
@@ -70,7 +66,6 @@ public class ModifyBookActivity extends AppCompatActivity {
         EditText edit_addBook_img = (EditText)findViewById(R.id.edit_addBook_img);
         edit_addBook_img.setText(bookEdit.getImg());
 
-
         RadioButton radioButton_yes = findViewById(R.id.radioButton_yes);
         RadioButton radioButton_no = findViewById(R.id.radioButton_no);
 
@@ -81,7 +76,7 @@ public class ModifyBookActivity extends AppCompatActivity {
             radioButton_no.setChecked(true);
         }
 
-        //Aceptar modificacion
+        //ACEPTAR MODIFICACION
         Button button_modify_ok = (Button)findViewById(R.id.button_modify_ok);
         button_modify_ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +118,7 @@ public class ModifyBookActivity extends AppCompatActivity {
                 bookEdit.setRating(rating);
                 bookEdit.setRecommend(recommend);
 
-
+                //Actualizar book
                 modifyBookVM.updateBook(bookEdit);
 
                 finish();
@@ -131,7 +126,7 @@ public class ModifyBookActivity extends AppCompatActivity {
             }
         });
 
-        //Cancelar modificacion
+        //CANCELAR MODIFICACION
         Button button_modify_no = findViewById(R.id.button_modify_no);
         button_modify_no.setOnClickListener(new View.OnClickListener() {
             @Override

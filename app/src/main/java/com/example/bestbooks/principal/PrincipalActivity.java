@@ -46,11 +46,9 @@ public class PrincipalActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_books);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-
         //Informacion del usuario registrado
         MyApplication claseGlobal = (MyApplication) getApplicationContext();
         myUserID = claseGlobal.getMyUserID();
-
 
         //Se crea una instancia de la clase contenedora  y el VM
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
@@ -67,7 +65,7 @@ public class PrincipalActivity extends AppCompatActivity {
             }
         });
 
-        //Button para add un book
+        //BOTON PARA CREAR UN BOOK
         FloatingActionButton fab = findViewById(R.id.fabPrincipal);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

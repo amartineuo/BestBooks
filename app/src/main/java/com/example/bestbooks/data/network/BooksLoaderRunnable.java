@@ -20,7 +20,7 @@ public class BooksLoaderRunnable implements Runnable{
 
     @Override
     public void run() {
-        //Cargar books de la API
+        //Cargar books de la BD Remota
 
         //Crear instancia de Retrofit y add el convertidor GSON
         Retrofit retrofit = new Retrofit.Builder()

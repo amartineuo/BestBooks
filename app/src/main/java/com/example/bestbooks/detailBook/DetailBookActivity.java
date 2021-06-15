@@ -59,14 +59,13 @@ public class DetailBookActivity extends AppCompatActivity {
         //Informacion del libro sobre el que mostrar los detalles
         actualBook = claseGlobal.getBookAux();
 
-
-
         //Se crea una instancia de la clase contenedora  y el VM
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
         detailBookVM = new ViewModelProvider(this, appContainer.detailBookVMFactory).get(DetailBookViewModel.class);
 
-        //----------INFORMACION DEL LIBRO-----------
 
+
+        //----------INFORMACION DEL LIBRO-----------
 
         detailBookVM.getBookByID(actualBook.getPostID()).observe(this, new Observer<Book>() {
             @Override
@@ -183,9 +182,9 @@ public class DetailBookActivity extends AppCompatActivity {
                 deleteBook();
             }
         });
-
     }
 
+    //BORRAR UN BOOK
     public void deleteBook(){
         if(!borrado) {
             AlertDialog.Builder builder = new AlertDialog.Builder(DetailBookActivity.this);
@@ -214,8 +213,8 @@ public class DetailBookActivity extends AppCompatActivity {
         }
     }
 
+    //COMPROBAR SI EL USUARIO HA DADO FAVORITO O NO
     public void comprobarFav(){
-
         detailBookVM.getFavByUserAndBook(myUserID, actualBook.getPostID()).observe(this, new Observer<Favorite>() {
             @Override
             public void onChanged(Favorite favorite) {
@@ -234,6 +233,7 @@ public class DetailBookActivity extends AppCompatActivity {
         });
     }
 
+    //INSERTAR O ELIMINAR FAVORITO
     //0 - add; 1 - delete
     public void ponerQuitarFav(int cod){
 

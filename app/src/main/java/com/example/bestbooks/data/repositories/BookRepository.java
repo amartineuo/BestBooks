@@ -58,7 +58,7 @@ public class BookRepository {
         return mBookDao.getAllBooks();
     }
 
-    //Obtener books actuales de un user
+    //Obtener books actuales de un usuario
     public LiveData<List<Book>> getAllCurrentBooksByUser(int userID) {
         return mBookDao.getUserBooks(userID);
     }
