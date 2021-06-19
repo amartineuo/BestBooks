@@ -63,7 +63,9 @@ public class UserFavsActivity extends AppCompatActivity {
                         userFavsVM.getBookByID(favorite.getBookFav()).observe(UserFavsActivity.this, new Observer<Book>() {
                             @Override
                             public void onChanged(Book book) {
-                                favsUser.add(book);
+                                if (book != null) {
+                                    favsUser.add(book);
+                                }
                                 AdapterRecycler adapterRecycler = new AdapterRecycler(favsUser, myUserID);
                                 recyclerView.setAdapter(adapterRecycler);
                             }
